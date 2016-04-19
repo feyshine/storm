@@ -19,23 +19,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript">  
     
     function login(){
-		$('#form').form('submit',{
-			onSubmit:function(){
-				return $(this).form('enableValidation').form('validate');
-			}
-		});
-		
 		var form = document.forms[0];  
         form.action = "${pageContext.request.contextPath}/user/login";  
         form.method = "post";  
         form.submit();
 	}
+    
+
+    
 	function regist(){
 		var form = document.forms[0];  
         form.action = "${pageContext.request.contextPath}/user/regist";  
         form.method = "post";  
         form.submit();
 	}
+	
+	
  
  
 </script>
@@ -43,29 +42,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 </head>
 <body >
-	<div style="margin:20px 0;">
-	<div class="easyui-panel" title="登录" align = "center" style="width:50%;">
-		<div style="padding:10px 60px 20px 60px">
-	    <form id="form" class="easyui-form"  data-options="novalidate:true">
-	    	<table cellpadding="5">
+	<div align="center">
+	<div class="easyui-panel" title="登录"  style="width:40%;">
+		<div style="padding:20px 20px 20px 20px">
+	    <form id="form" class="easyui-form" >
+	    	<table cellpadding="5" align = "center">
 	    		<tr>
 	    			<td>账号:</td>
-	    			<td><input class="easyui-textbox" type="text" name="username" data-options="required:true"></input></td>
+	    			<td><input id = "username" class="easyui-textbox" validType="text" name="username" data-options="required:true" missingMessage="不能为空" invalidMessage="无效账户" tipPosition="right"></input></td>
 	    		</tr>
 	    		<tr>
 	    			<td>密码:</td>
-	    			<td><input class="easyui-textbox" type="password" name="password" data-options="required:true"></input></td>
+	    			<td><input id = "password" class="easyui-textbox" validType="password" name="password" data-options="required:true" missingMessage="不能为空" invalidMessage="无效密码" tipPosition="right"></input></td>
 	    		</tr>
 	    	</table>
 	    </form>
 	    <div style="text-align:center;padding:5px">
-	    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="login()">登录</a>
-	    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="regist()">注册</a>
+	    	<input type = "submit" name="登录" value="登录" onclick="login()">
+	    	<input type= "button" name="注册" value="注册" onclick="regist()">
 	    </div>
 	    </div>
 	</div>
 	</div>
-    
 	
   </body>
 </html>
