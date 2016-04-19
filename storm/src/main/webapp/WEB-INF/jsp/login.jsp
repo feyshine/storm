@@ -18,16 +18,29 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<title>登录</title>
 <script type="text/javascript">  
     
-    function login(){
-		var form = document.forms[0];  
+    function login() {
+    	var form = document.forms[0];  
         form.action = "${pageContext.request.contextPath}/user/login";  
         form.method = "post";  
         form.submit();
 	}
     
+    function validateForm() {
+    	var username = document.forms["form"]["username"].value;
+    	var password = document.forms["form"]["password"].value;
+    	if(username == null||username == ""){
+    		alert("账号不能为空");
+    		return false;
+    	}else if(password == null||password == ""){
+    		alert("密码不能为空");
+    		return false;
+    	}
+    	return true;
+    }
+    
 
     
-	function regist(){
+	function regist() {
 		var form = document.forms[0];  
         form.action = "${pageContext.request.contextPath}/user/regist";  
         form.method = "post";  
@@ -43,27 +56,38 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </head>
 <body >
 	<div align="center">
-	<div class="easyui-panel" title="登录"  style="width:40%;">
-		<div style="padding:20px 20px 20px 20px">
-	    <form id="form" class="easyui-form" >
-	    	<table cellpadding="5" align = "center">
-	    		<tr>
-	    			<td>账号:</td>
-	    			<td><input id = "username" class="easyui-textbox" validType="text" name="username" data-options="required:true" missingMessage="不能为空" invalidMessage="无效账户" tipPosition="right"></input></td>
-	    		</tr>
-	    		<tr>
-	    			<td>密码:</td>
-	    			<td><input id = "password" class="easyui-textbox" validType="password" name="password" data-options="required:true" missingMessage="不能为空" invalidMessage="无效密码" tipPosition="right"></input></td>
-	    		</tr>
-	    	</table>
-	    </form>
-	    <div style="text-align:center;padding:5px">
-	    	<input type = "submit" name="登录" value="登录" onclick="login()">
-	    	<input type= "button" name="注册" value="注册" onclick="regist()">
-	    </div>
-	    </div>
+		<div class="easyui-panel" title="登录" style="width:40%;">
+			<div style="padding:20px 20px 20px 20px">
+				<form id="form" class="easyui-form" onSubmit="return validateForm()">
+					<table cellpadding="5" align="center">
+						<tr>
+							<td>账号:</td>
+							<td><input id="username" name="username"
+								class="easyui-textbox" validType="text" name="username"
+								data-options="required:true" missingMessage="不能为空"
+								invalidMessage="无效账户" tipPosition="right"></input></td>
+						</tr>
+						<tr>
+							<td>密码:</td>
+							<td><input id="password" name="password"
+								class="easyui-textbox" validType="password" name="password"
+								data-options="required:true" missingMessage="不能为空"
+								invalidMessage="无效密码" tipPosition="right"></input></td>
+						</tr>
+
+					</table>
+
+
+					<div style="text-align:center;padding:5px">
+						<input type="submit" name="登录" value="登录" onclick="login()">
+						<input type="button" name="注册" value="注册" onclick="regist()">
+					</div>
+
+				</form>
+
+			</div>
+		</div>
 	</div>
-	</div>
-	
-  </body>
+
+</body>
 </html>
