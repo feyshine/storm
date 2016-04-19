@@ -26,7 +26,7 @@ public class AccessTokenServlet extends HttpServlet {
 		TokenThread.appId = getInitParameter("appid");  
         TokenThread.appSecret = getInitParameter("appsecret");
         new Thread(new TokenThread()).start(); //启动进程
-//        new Thread(new MenuThread()).start();
+        new Thread(new MenuThread()).start();
 		super.init();
 	}
 	

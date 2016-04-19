@@ -17,6 +17,7 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.cn.hnust.pojo.EventType;
 import com.cn.hnust.pojo.GeneralMessage;
 import com.cn.hnust.pojo.MessageType;
 import com.cn.hnust.pojo.MusicMessage;
@@ -93,6 +94,40 @@ public class MessageHandler {
 	            case LINK:
 	                result = handleLinkMessage(map);
 	                break;
+	            case EVENT:
+	            	String eventType = map.get("Event").toString();
+	     	        System.out.println("eventType:" + eventType);
+	     	        EventType eventEnumType = EventType.valueOf(EventType.class, eventType.toUpperCase());
+	     	        switch(eventEnumType){
+	     	        case CLICK:
+	     	        	result = handleGetMessageEvent(map);
+	     	        	break;
+	     	        case VIEW:
+	     	        	result = handleLinkEvent();
+	     	        	break;
+	     	        case SCANCODE_PUSH:
+	     	        	result = handleScanPushEvent();
+	     	        	break;
+	     	        case SCANCODE_WAITMSG:
+	     	        	result = handleScanWaitMsgEvent();
+	     	        	break;
+	     	        case PIC_SYSPHOTO:
+	     	        	result = handlePicSystemEvent();
+	     	        	break;
+	     	        case PIC_PHOTO_OR_ALBUM:
+	     	        	result = handlePicPhotoAlbumEvent();
+	     	        	break;
+	     	        case PIC_WEIXIN:
+	     	        	result = handlePicWeiXinEvent();
+	     	        	break;
+	     	        case LOCATION_SELECT:
+	     	        	result = handleLocationSelectionEvent();
+	     	        	break;
+	     	        
+	     	        default:
+		                break;
+	     	        }
+	            	break;
 	            default:
 	                break;
 	        }
@@ -100,7 +135,52 @@ public class MessageHandler {
 	    }
 	    
 	    
-	    private static String handleTextMessage(Map map) {
+	    private static String handleLocationSelectionEvent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+		private static String handlePicWeiXinEvent() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		private static String handlePicPhotoAlbumEvent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+		private static String handlePicSystemEvent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+		private static String handleScanWaitMsgEvent() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		private static String handleScanPushEvent() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		private static String handleLinkEvent() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		private static String handleGetMessageEvent(Map map) {
+			String xml = "";
+			String fromUserName = map.get("FromUserName").toString();
+	        String toUserName = map.get("ToUserName").toString();
+	        xml = buildTextMessage(map, "你点击了天气预报");
+			return xml;
+		}
+
+
+
+		private static String handleTextMessage(Map map) {
 	        String xml = "";
 	        String fromUserName = map.get("FromUserName").toString();
 	        // 开发者微信号
