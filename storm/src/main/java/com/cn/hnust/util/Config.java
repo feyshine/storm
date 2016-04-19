@@ -15,4 +15,15 @@ public final class  Config {
 	//自定义菜单删除接口 GET
 	public final static String delete_menu_url = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN";
 	
+	//创建个性化菜单 post
+	public final static String creat_cust_menu_url = "https://api.weixin.qq.com/cgi-bin/menu/addconditional?access_token=ACCESS_TOKEN";
+	//删除个性化菜单 post
+	public final static String delete_cust_menu_url = "https://api.weixin.qq.com/cgi-bin/menu/delconditional?access_token=ACCESS_TOKEN";
+	//测试个性化菜单匹配结果 post
+	public final static String test_cust_menu_url = "https://api.weixin.qq.com/cgi-bin/menu/trymatch?access_token=ACCESS_TOKEN";
+	//获取自定义菜单配置接口 GET
+	public final static String get_cust_menu_config_url = "https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info?access_token=ACCESS_TOKEN";
+	
+	
+	
 }
