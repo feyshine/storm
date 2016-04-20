@@ -1,6 +1,6 @@
 package com.cn.hnust.resp;
 
-public class MenuResult {
+public class ResponseResult {
 	
 	private String errcode;
 	private String errmsg;

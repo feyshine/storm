@@ -1,7 +1,7 @@
 package com.cn.hnust.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.cn.hnust.resp.MenuResult;
+import com.cn.hnust.resp.ResponseResult;
 import com.cn.hnust.util.Config;
 import com.cn.hnust.util.L;
 
@@ -24,7 +24,7 @@ public class MenuThread implements Runnable{
 		String url = String.format(Config.creat_menu_url,TokenThread.accessToken.getAccessToken());
 		String jsonMenu = CreateMenuFactory.create();
 		String result = workHelper.postHttpsResponse(url, jsonMenu);
-		MenuResult menuresult = JSON.parseObject(result, MenuResult.class);
+		ResponseResult menuresult = JSON.parseObject(result, ResponseResult.class);
 		if(menuresult == null){
 			L.i(TAG, "服务器返回 null");
 			return ;

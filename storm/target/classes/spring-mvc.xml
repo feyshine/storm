@@ -12,8 +12,6 @@
     
     <!-- 自动扫描该包，使SpringMVC认为包下用了@controller注解的类是控制器 -->  
     <context:component-scan base-package="com.cn.hnust.controller" /> 
-    <!-- Enables the Spring MVC @Controller programming model -->
-    <mvc:annotation-driven/>
       
     <!--避免IE执行AJAX时，返回JSON出现下载文件 -->  
     <bean id="mappingJacksonHttpMessageConverter"  
@@ -32,18 +30,25 @@
                 <ref bean="mappingJacksonHttpMessageConverter" /> <!-- JSON转换器 -->  
             </list>  
         </property>  
-    </bean>  
+    </bean>
+    
+ 
+      
     <!-- 定义跳转的文件的前后缀 ，视图模式配置-->  
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">  
         <!-- 这里的配置我的理解是自动给后面action的方法return的字符串加上前缀和后缀，变成一个 可用的url地址 -->  
         <property name="prefix" value="/WEB-INF/jsp/" />  
         <property name="suffix" value=".jsp" />  
     </bean>
+  
     
     <!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
-    <mvc:resources mapping="/static/js/**" location="/static/js/" />
-    <mvc:resources mapping="/static/images/**" location="/static/images/" />
-    <mvc:resources mapping="/static/css/**" location="/static/css/" />
+    <mvc:resources mapping="/resources/**" location="/resources/" cache-period="31556926"/>
+    <mvc:resources mapping="/resources/images/images/**" location="/resources/images/images/" cache-period="31556926"/>
+    <mvc:resources mapping="/resources/images/icons/**" location="/resources/images/icons/" cache-period="31556926"/>
+    <mvc:resources mapping="/resources/**" location="/resources/" cache-period="31556926"/>
+     <!-- Enables the Spring MVC @Controller programming model -->
+    <mvc:annotation-driven/>
       
     <!-- 配置文件上传，如果没有使用文件上传可以不用配置，当然如果不配，那么配置文件中也不必引入上传组件包 -->  
     <bean id="multipartResolver"    

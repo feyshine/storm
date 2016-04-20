@@ -10,9 +10,12 @@ public class TokenThread implements Runnable {
 	public static String appId = "";
 	public static String appSecret = "";
 	public static AccessToken accessToken = null;
-
-	public TokenThread() {
-		// TODO Auto-generated constructor stub
+	private AccessTokenCallBack callback;
+	
+	
+	
+	public TokenThread(AccessTokenCallBack callback) {
+		this.callback = callback;
 	}
 
 	@Override
@@ -23,6 +26,7 @@ public class TokenThread implements Runnable {
 			if (null != accessToken) {
 				L.i("token", accessToken.getAccessToken());
 				L.i("time", accessToken.getExpiresin()+"");
+				callback.callBack(accessToken);
 					try {
 						Thread.sleep(7000 * 1000);
 					} catch (InterruptedException e) {
@@ -50,5 +54,9 @@ public class TokenThread implements Runnable {
 		return token;
 
 	}
-
+	
+	public interface AccessTokenCallBack {
+		public void callBack(AccessToken accessToken);
+	}
+	
 }

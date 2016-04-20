@@ -142,6 +142,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								</ul></li>
 							<li><span>数据分析</span></li>
 						</ul></li>
+					<li><span><a href="<%=request.getContextPath()%>/kfservice/service">微信客服中心</a></span></li>
 					<li><span>系统管理</span></li>
 				</ul>
 			</div>
