@@ -29,6 +29,7 @@ public class KServiceController {
 		String token = FileUtls.read(FileUtls.PATH);
 		L.i(TAG, "token" + token);
 		String url = String.format(Config.add_customer_service_url,token);
+		kservice.setKfaccount(kservice.getKfaccount()+"@xuyelijia");
 		String jsonStr = JSON.toJSONString(kservice);
 		L.i("json", jsonStr);
 		String result = workHelper.postHttpsResponse(url, jsonStr);
