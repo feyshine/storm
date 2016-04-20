@@ -37,4 +37,43 @@ public final class  Config {
 	//客服接口-发消息  POST
 	public final static String send_msg_to_customer_service_url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=%s";
 	
+	//上传图文消息内的图片获取URL POST
+	public final static String upload_ImgMsg_return_url = "https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=%s";
+	//上传图文消息素材 POST
+	public final static String upload_image_message_url = "https://api.weixin.qq.com/cgi-bin/media/uploadnews?access_token=%s";
+	//根据分组进行群发 POST
+	public final static String send_msg_by_group_url = "https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token=%s";
+	//根据OpenID列表群发 POST
+	public final static String seng_msg_by_openIds_url = "https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=%s";
+	//删除群发 post
+	public final static String delete_group_msg_url = "https://api.weixin.qq.com/cgi-bin/message/mass/delete?access_token=%s";
+	//预览接口  POST
+	public final static String pre_view_url = "https://api.weixin.qq.com/cgi-bin/message/mass/preview?access_token=%s";
+	//查询群发消息发送状态  POST
+	public final static String group_message_state_url = "https://api.weixin.qq.com/cgi-bin/message/mass/get?access_token=%s";
+	
+	//创建分组 POST
+	public static final String creat_group_url = "https://api.weixin.qq.com/cgi-bin/groups/create?access_token=%s";
+	//查询所有分组  GET
+	public static final String query_group_all_url = "https://api.weixin.qq.com/cgi-bin/groups/get?access_token=%s";
+	//查询用户所在分组 POST
+	public static final String query_group_by_user = "https://api.weixin.qq.com/cgi-bin/groups/getid?access_token=%s";
+	//修改分组名  POST
+	public static final String reset_group_name_url = "https://api.weixin.qq.com/cgi-bin/groups/update?access_token=%s";
+	//移动用户分组 POST
+	public final static String move_user_group_url = "https://api.weixin.qq.com/cgi-bin/groups/members/update?access_token=%s";
+	//批量移动用户分组 POST
+	public final static String move_users_group_url = "https://api.weixin.qq.com/cgi-bin/groups/members/batchupdate?access_token=%s";
+	//删除分组 POST
+	public final static String delete_group_url = "https://api.weixin.qq.com/cgi-bin/groups/delete?access_token=%s";
+	
+	//设置用户备注名  POST
+	public final static String rename_user_url = "https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=%s";
+	//获取用户基本信息（包括UnionID机制） GET 
+	public final static String get_userInfo_url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN";
+	//批量获取用户基本信息  POST
+	public final static String get_userInfos_url = "https://api.weixin.qq.com/cgi-bin/user/info/batchget?access_token=%s";
+	//获取用户列表 GET
+	public final static String get_users_url = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=%s&next_openid=%s";
+	
 }
