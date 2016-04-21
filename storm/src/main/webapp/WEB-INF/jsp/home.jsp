@@ -105,7 +105,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <body style="height:100%;width:100%;overflow:hidden;border:none;">
 	<div class="easyui-layout" fit="true">
-		<div data-options="region:'north',border:false" style="height:15%;background:#B3DFDA; padding:25px;">
+		<div data-options="region:'north',border:false" style="height:10%;background:#B3DFDA; padding:25px;">
 			<div agin="center">
 				<h2>微信公众号后台管理系统</h2>
 			</div>
