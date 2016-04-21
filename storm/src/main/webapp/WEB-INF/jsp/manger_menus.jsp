@@ -97,7 +97,7 @@ $(function(){
 		<thead>
 			<tr>
 				<th field="name" width="100">菜单名称</th>
-				<th field="key" width="100">菜单KEY值</th>
+				<th field="xkey" width="100">菜单KEY值</th>
 				<th field="type" width="150">菜单的响应动作类型</th>
 				<th field="url" width="100">菜单链接</th>
 				<th field="media_id" width="100">素材接口</th>
