@@ -21,7 +21,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript">
 	function regist() {
 		var form = document.forms[0];
-		form.action = "${pageContext.request.contextPath}/user/addUser";
+		form.action = "${pageContext.request.contextPath}/regist/add";
 		form.method = "post";
 		form.submit();
 	}

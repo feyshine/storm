@@ -16,7 +16,7 @@ import com.cn.hnust.util.FileUtls;
 import com.cn.hnust.util.L;
 
 @Controller
-@RequestMapping("kfservice")
+@RequestMapping("kservice")
 public class KServiceController {
 	private final static String TAG = KServiceController.class.getSimpleName();
 	
@@ -47,8 +47,8 @@ public class KServiceController {
 		return "addkfsuccess";
 	}
 	
-	@RequestMapping("/service")
-	public String toServcieJsp(){
+	@RequestMapping(value = "", method = { RequestMethod.GET })
+	public String toKf() {
 		return "kservice";
 	}
 	

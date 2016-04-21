@@ -20,7 +20,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
     function login() {
     	var form = document.forms[0];  
-        form.action = "${pageContext.request.contextPath}/user/login";  
+        form.action = "${pageContext.request.contextPath}/login";  
         form.method = "post";  
         form.submit();
 	}
@@ -42,7 +42,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
 	function regist() {
 		var form = document.forms[0];  
-        form.action = "${pageContext.request.contextPath}/user/regist";  
+        form.action = "${pageContext.request.contextPath}/home/regist";  
         form.method = "post";  
         form.submit();
 	}
