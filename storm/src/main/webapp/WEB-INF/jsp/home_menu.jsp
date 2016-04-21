@@ -114,7 +114,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<div style="margin:10px">
 			<li>
 				<span>
-					<a class="easyui-linkbutton" onclick="addTab('','<%=request.getContextPath()%>/home/dataAnalysis')">数据分析</a>
+					<a class="easyui-linkbutton" onclick="addTab('数据分析','<%=request.getContextPath()%>/home/dataAnalysis')">数据分析</a>
 				</span>
 			</li>
 			</div>
