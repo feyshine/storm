@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.hnust.dao.WxMessageMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.hnust.pojo.WxMessage" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="MsgId" property="msgid" jdbcType="BIGINT" />
+    <result column="ToUserName" property="tousername" jdbcType="VARCHAR" />
+    <result column="FromUserName" property="fromusername" jdbcType="VARCHAR" />
+    <result column="CreateTime" property="createtime" jdbcType="VARCHAR" />
+    <result column="MsgType" property="msgtype" jdbcType="VARCHAR" />
+    <result column="Content" property="content" jdbcType="VARCHAR" />
+    <result column="PicUrl" property="picurl" jdbcType="VARCHAR" />
+    <result column="MediaId" property="mediaid" jdbcType="VARCHAR" />
+    <result column="Format" property="format" jdbcType="VARCHAR" />
+    <result column="ThumbMediaId" property="thumbmediaid" jdbcType="VARCHAR" />
+    <result column="Location_X" property="locationX" jdbcType="VARCHAR" />
+    <result column="Location_Y" property="locationY" jdbcType="VARCHAR" />
+    <result column="Scale" property="scale" jdbcType="VARCHAR" />
+    <result column="Title" property="title" jdbcType="VARCHAR" />
+    <result column="Description" property="description" jdbcType="VARCHAR" />
+    <result column="Url" property="url" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, MsgId, ToUserName, FromUserName, CreateTime, MsgType, Content, PicUrl, MediaId, 
+    Format, ThumbMediaId, Location_X, Location_Y, Scale, Title, Description, Url
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from wx_message
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="queryAll" resultMap="BaseResultMap">
+  	select * from wx_message
+  </select>
+  <select id="queryByPageSize" resultMap="BaseResultMap">
+  	select * from wx_message limit #{startRow},#{pageSize}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from wx_message
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.cn.hnust.pojo.WxMessage" >
+    insert into wx_message (id, MsgId, ToUserName, 
+      FromUserName, CreateTime, MsgType, 
+      Content, PicUrl, MediaId, 
+      Format, ThumbMediaId, Location_X, 
+      Location_Y, Scale, Title, 
+      Description, Url)
+    values (#{id,jdbcType=BIGINT}, #{msgid,jdbcType=BIGINT}, #{tousername,jdbcType=VARCHAR}, 
+      #{fromusername,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR}, #{msgtype,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR}, #{picurl,jdbcType=VARCHAR}, #{mediaid,jdbcType=VARCHAR}, 
+      #{format,jdbcType=VARCHAR}, #{thumbmediaid,jdbcType=VARCHAR}, #{locationX,jdbcType=VARCHAR}, 
+      #{locationY,jdbcType=VARCHAR}, #{scale,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cn.hnust.pojo.WxMessage" >
+    insert into wx_message
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="msgid != null" >
+        MsgId,
+      </if>
+      <if test="tousername != null" >
+        ToUserName,
+      </if>
+      <if test="fromusername != null" >
+        FromUserName,
+      </if>
+      <if test="createtime != null" >
+        CreateTime,
+      </if>
+      <if test="msgtype != null" >
+        MsgType,
+      </if>
+      <if test="content != null" >
+        Content,
+      </if>
+      <if test="picurl != null" >
+        PicUrl,
+      </if>
+      <if test="mediaid != null" >
+        MediaId,
+      </if>
+      <if test="format != null" >
+        Format,
+      </if>
+      <if test="thumbmediaid != null" >
+        ThumbMediaId,
+      </if>
+      <if test="locationX != null" >
+        Location_X,
+      </if>
+      <if test="locationY != null" >
+        Location_Y,
+      </if>
+      <if test="scale != null" >
+        Scale,
+      </if>
+      <if test="title != null" >
+        Title,
+      </if>
+      <if test="description != null" >
+        Description,
+      </if>
+      <if test="url != null" >
+        Url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="msgid != null" >
+        #{msgid,jdbcType=BIGINT},
+      </if>
+      <if test="tousername != null" >
+        #{tousername,jdbcType=VARCHAR},
+      </if>
+      <if test="fromusername != null" >
+        #{fromusername,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=VARCHAR},
+      </if>
+      <if test="msgtype != null" >
+        #{msgtype,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="picurl != null" >
+        #{picurl,jdbcType=VARCHAR},
+      </if>
+      <if test="mediaid != null" >
+        #{mediaid,jdbcType=VARCHAR},
+      </if>
+      <if test="format != null" >
+        #{format,jdbcType=VARCHAR},
+      </if>
+      <if test="thumbmediaid != null" >
+        #{thumbmediaid,jdbcType=VARCHAR},
+      </if>
+      <if test="locationX != null" >
+        #{locationX,jdbcType=VARCHAR},
+      </if>
+      <if test="locationY != null" >
+        #{locationY,jdbcType=VARCHAR},
+      </if>
+      <if test="scale != null" >
+        #{scale,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cn.hnust.pojo.WxMessage" >
+    update wx_message
+    <set >
+      <if test="msgid != null" >
+        MsgId = #{msgid,jdbcType=BIGINT},
+      </if>
+      <if test="tousername != null" >
+        ToUserName = #{tousername,jdbcType=VARCHAR},
+      </if>
+      <if test="fromusername != null" >
+        FromUserName = #{fromusername,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        CreateTime = #{createtime,jdbcType=VARCHAR},
+      </if>
+      <if test="msgtype != null" >
+        MsgType = #{msgtype,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        Content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="picurl != null" >
+        PicUrl = #{picurl,jdbcType=VARCHAR},
+      </if>
+      <if test="mediaid != null" >
+        MediaId = #{mediaid,jdbcType=VARCHAR},
+      </if>
+      <if test="format != null" >
+        Format = #{format,jdbcType=VARCHAR},
+      </if>
+      <if test="thumbmediaid != null" >
+        ThumbMediaId = #{thumbmediaid,jdbcType=VARCHAR},
+      </if>
+      <if test="locationX != null" >
+        Location_X = #{locationX,jdbcType=VARCHAR},
+      </if>
+      <if test="locationY != null" >
+        Location_Y = #{locationY,jdbcType=VARCHAR},
+      </if>
+      <if test="scale != null" >
+        Scale = #{scale,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        Title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        Description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        Url = #{url,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cn.hnust.pojo.WxMessage" >
+    update wx_message
+    set MsgId = #{msgid,jdbcType=BIGINT},
+      ToUserName = #{tousername,jdbcType=VARCHAR},
+      FromUserName = #{fromusername,jdbcType=VARCHAR},
+      CreateTime = #{createtime,jdbcType=VARCHAR},
+      MsgType = #{msgtype,jdbcType=VARCHAR},
+      Content = #{content,jdbcType=VARCHAR},
+      PicUrl = #{picurl,jdbcType=VARCHAR},
+      MediaId = #{mediaid,jdbcType=VARCHAR},
+      Format = #{format,jdbcType=VARCHAR},
+      ThumbMediaId = #{thumbmediaid,jdbcType=VARCHAR},
+      Location_X = #{locationX,jdbcType=VARCHAR},
+      Location_Y = #{locationY,jdbcType=VARCHAR},
+      Scale = #{scale,jdbcType=VARCHAR},
+      Title = #{title,jdbcType=VARCHAR},
+      Description = #{description,jdbcType=VARCHAR},
+      Url = #{url,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
