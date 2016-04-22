@@ -6,21 +6,21 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.alibaba.fastjson.JSON;
 import com.cn.hnust.pojo.WxMenu;
 import com.cn.hnust.service.imp.MenuMangerServiceImp;
-import com.cn.hnust.util.L;
 
 @Controller
 @RequestMapping("/menu")
 public class MenuManagerController {
+	
+	private static Logger logger = LogManager.getLogger(MenuManagerController.class.getName());
 	
 	@Resource
 	private MenuMangerServiceImp menuMangerService;
@@ -38,6 +38,7 @@ public class MenuManagerController {
 		int total = menuList.size();
 		map.put("total", total);
 		map.put("rows", menuList);
+		logger.info("query all menu return");
 		return map;
 	}
 	
@@ -56,7 +57,64 @@ public class MenuManagerController {
 		map.put("total", total);
 		List<WxMenu> menuList = menuMangerService.queryWxMenuByPageSize(start, number);
 		map.put("rows", menuList);
-		L.i("菜单", "返回了");
+		logger.info("query  menu return");
+		return map;
+	}
+	
+	@ResponseBody//加了这行返回json数据
+	@RequestMapping(value = "/add", method = { RequestMethod.POST })
+	public Map<String, Object> addMenus(WxMenu menu){
+		Map<String, Object> map = new HashMap<String, Object>();
+		WxMenu tempMenu = menuMangerService.queryById(menu.getId());
+		if(tempMenu==null){
+			menuMangerService.save(menu);
+			map.put("result", 1);
+			map.put("msg", "菜单添加成功！");
+			logger.info(menu.getName() + " 保存数据库中");
+		}else{
+			map.put("result", 0);
+			map.put("msg", "菜单已存在！");
+			logger.info(menu.getName() + " 已存在数据库中");
+		}
+		
+		return map;
+	}
+	
+	@ResponseBody//加了这行返回json数据
+	@RequestMapping(value = "/edit", method = { RequestMethod.POST })
+	public Map<String, Object> updateMenus(WxMenu menu){
+		Map<String, Object> map = new HashMap<String, Object>();
+		WxMenu tempMenu = menuMangerService.queryById(menu.getId());
+		if(tempMenu==null){
+			map.put("result", 0);
+			map.put("msg", "菜单不存在！");
+			logger.info(menu.getName() + " has updated  faltrue");
+		}else{
+			menuMangerService.update(menu);
+			map.put("result", 1);
+			map.put("msg", "菜单编辑成功！");
+			logger.info(menu.getName() + " has updated  successfully");
+		}
+		
+		return map;
+	}
+	
+	@ResponseBody//加了这行返回json数据
+	@RequestMapping(value = "/delete", method = { RequestMethod.POST })
+	public Map<String, Object> deleteMenus(Long id){
+		Map<String, Object> map = new HashMap<String, Object>();
+		WxMenu tempMenu = menuMangerService.queryById(id);
+		if(tempMenu==null){
+			map.put("result", 0);
+			map.put("msg", "菜单不存在！");
+			logger.info(id + " has not in database");
+		}else{
+			menuMangerService.delete(id);;
+			map.put("result", 1);
+			map.put("msg", "菜单删除成功！");
+			logger.info(id + " has deleted  database");
+		}
+		
 		return map;
 	}
 

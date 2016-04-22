@@ -112,12 +112,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</div>
 	    <jsp:include page="home_menu.jsp"></jsp:include>
 		<jsp:include page="home_content.jsp"></jsp:include>
-			
-		</div>
-	
-	<form action="<%=request.getContextPath()%>/user/listUser" method="get">
-		<input type="submit" name="list" value="列表">
-	</form>
+	</div>
 </body>
 
 

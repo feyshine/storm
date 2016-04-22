@@ -10,6 +10,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <head>
 <base href="<%=basePath%>">
 <script type="text/javascript">
+	$(function(){
+		$('tree').tree({
+			url:'',
+			lines:true,
+			onBeforeExpand:function(node,param){    
+            	$('#tree').tree('options').url = "../servlet/School_Tree?id=" + node.id;  //动态获取节点  
+            },    
+            loadFilter: function(data){      
+            	if (data.msg){      
+                	return data.msg;      
+                } else {      
+                    return data;      
+                }      
+           },  
+           onClick:function(node){                      //节点的点击事件  
+           	var url='information_'+node.id+'.jsp';   
+           	addTab(node.text,url);   
+             }   
+		});
+	});
+
+		
 	function addTab(title, url) {
 		if ($('#tab').tabs('exists', title)) {
 			$('#tab').tabs('select', title);
@@ -24,45 +46,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		}
 	}
 
-	//加载树型菜单   
-	$('#homemenu').tree({
-		onSelect : function(node) {
-			openMenuTow(node);
-		}
-	});
-
-	function openMenuTow(node) {
-		//树型菜单的名字   
-		var noteText = $(".tree-title", node.target).text();
-		var exist_tab = $('#tab').tabs('getTab', noteText);
-		//判断是否已经打开该选项卡  
-		if (exist_tab) {
-			$('#tab').tabs('select', noteText);
-			return;
-		} else {
-			$('#tab').tabs('add', {
-				'id' : 'tab',
-				title : noteText,
-				fit : true,
-				content : '',
-				closable : true
-			});
-			//获取最后一个tabs 在新加的选项卡后面添加"关闭全部"  
-			var li = $(".tabs-wrap ul li:last-child");
-			$("#close").remove();
-			li
-					.after("<li id='close'><a class='tabs-inner' href='javascript:void()' onClick='javascript:closeAll()'>关闭全部</a></li>");
-		}
-	}
-
-	function closeAll() {
-		$(".tabs li").each(function(index, obj) {
-			//获取所有可关闭的选项卡  
-			var tab = $(".tabs-closable", this).text();
-			$(".easyui-tabs").tabs('close', tab);
-		});
-		$("#close").remove();//同时把此按钮关闭  
-	}
 </script>
 </head>
 
