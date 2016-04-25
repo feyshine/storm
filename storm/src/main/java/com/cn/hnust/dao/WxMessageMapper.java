@@ -21,5 +21,5 @@ public interface WxMessageMapper<T> {
     
     List<T> queryAll();
     
-    List<T> querByPageSize(@Param(value = "startRow") int startRow,@Param(value = "pageSize") int pageSize);
+    List<T> queryByPageSize(@Param(value = "startRow") int startRow,@Param(value = "pageSize") int pageSize);
 }

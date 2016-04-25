@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +24,8 @@ import com.cn.hnust.pojo.MessageType;
 import com.cn.hnust.pojo.MusicMessage;
 import com.cn.hnust.pojo.NewsItem;
 import com.cn.hnust.pojo.PictureMessage;
+import com.cn.hnust.pojo.WxMessage;
+import com.cn.hnust.service.IWxService;
 import com.cn.hnust.util.L;
 
 public class MessageHandler {
@@ -66,7 +69,7 @@ public class MessageHandler {
 	 
 	 
 	 // 根据消息类型 构造返回消息
-	    public static String buildXml(Map map, HttpServletResponse response) {
+	    public static String buildXml(Map map,IWxService<WxMessage> messageService) {
 	        String result = "";
 	        String msgType = map.get("MsgType").toString();
 	        System.out.println("MsgType:" + msgType);
@@ -74,25 +77,25 @@ public class MessageHandler {
 	                msgType.toUpperCase());
 	        switch (messageEnumType) {
 	            case TEXT:
-	                result = handleTextMessage(map);
+	                result = handleTextMessage(map,messageService);
 	                break;
 	            case IMAGE:
-	                result = handleImageMessage(map);
+	                result = handleImageMessage(map,messageService);
 	                break;
 	            case VOICE:
-	                result = handleVoiceMessage(map);
+	                result = handleVoiceMessage(map,messageService);
 	                break;
 	            case VIDEO:
-	                result = handleVideoMessage(map);
+	                result = handleVideoMessage(map,messageService);
 	                break;
 	            case SHORTVIDEO:
-	                result = handleSmallVideoMessage(map);
+	                result = handleSmallVideoMessage(map,messageService);
 	                break;
 	            case LOCATION:
-	                result = handleLocationMessage(map);
+	                result = handleLocationMessage(map,messageService);
 	                break;
 	            case LINK:
-	                result = handleLinkMessage(map);
+	                result = handleLinkMessage(map,messageService);
 	                break;
 	            case EVENT:
 	            	String eventType = map.get("Event").toString();
@@ -100,7 +103,7 @@ public class MessageHandler {
 	     	        EventType eventEnumType = EventType.valueOf(EventType.class, eventType.toUpperCase());
 	     	        switch(eventEnumType){
 	     	        case CLICK:
-	     	        	result = handleGetMessageEvent(map);
+	     	        	result = handleGetMessageEvent(map,messageService);
 	     	        	break;
 	     	        case VIEW:
 	     	        	result = handleLinkEvent();
@@ -170,17 +173,15 @@ public class MessageHandler {
 			return null;
 		}
 
-		private static String handleGetMessageEvent(Map map) {
+		private static String handleGetMessageEvent(Map map, IWxService<WxMessage> messageService) {
 			String xml = "";
-			String fromUserName = map.get("FromUserName").toString();
-	        String toUserName = map.get("ToUserName").toString();
-	        xml = buildTextMessage(map, "你点击了天气预报");
+	        xml = buildTextMessage(map,messageService, "你点击了天气预报");
 			return xml;
 		}
 
 
 
-		private static String handleTextMessage(Map map) {
+		private static String handleTextMessage(Map map, IWxService<WxMessage> messageService) {
 	        String xml = "";
 	        String fromUserName = map.get("FromUserName").toString();
 	        // 开发者微信号
@@ -193,16 +194,16 @@ public class MessageHandler {
 	        msg.CreateTime = getUtcTime();
 	        switch (content) {
 	            case "文本":
-	                xml = buildTextMessage(map, "这是一条文本消息");
+	                xml = buildTextMessage(map,messageService, "这是一条文本消息");
 	                break;
 	            case "图片":
-	                xml = buildPicture(map);
+	                xml = buildPicture(map,messageService);
 	                break;
 	            case "音乐":
-	                xml = buildMusic(map);
+	                xml = buildMusic(map,messageService);
 	                break;
 	            case "图文":
-	                xml = buildNewsMessage(map);
+	                xml = buildNewsMessage(map,messageService);
 	                break;
 	            default:
 	                xml = String
@@ -232,14 +233,23 @@ public class MessageHandler {
 	     * 构造文本消息
 	     *
 	     * @param map
+	     * @param messageService 
 	     * @param content
 	     * @return
 	     */
-	    private static String buildTextMessage(Map map, String content) {
+	    private static String buildTextMessage(Map map, IWxService<WxMessage> messageService, String content) {
 	        String fromUserName = map.get("FromUserName").toString();
 	        // 开发者微信号
 	        String toUserName = map.get("ToUserName").toString();
-
+	        WxMessage wm = new WxMessage();
+	        wm.setMsgid(new Date().getTime());
+	        wm.setContent(content);
+	        wm.setCreatetime(getUtcTime());
+	        wm.setTousername(toUserName);
+	        wm.setFromusername(fromUserName);
+	        wm.setMsgtype("text");
+	        messageService.save(wm);
+	        
 	        return String.format("<xml><ToUserName><![CDATA[%s]]></ToUserName><FromUserName><![CDATA[%s]]></FromUserName><CreateTime>%s</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[%s]]></Content></xml>",
 	                fromUserName, toUserName, getUtcTime(), content);
 	    }
@@ -249,14 +259,23 @@ public class MessageHandler {
 	     * 构造图片消息
 	     *
 	     * @param map
+	     * @param messageService 
 	     * @return
 	     */
-	    private static String buildPicture(Map map) {
-	        PictureMessage msg = new PictureMessage();
+	    private static String buildPicture(Map map, IWxService<WxMessage> messageService) {
 	        String fromUserName = map.get("FromUserName").toString();
-	        // 公众号
 	        String toUserName = map.get("ToUserName").toString();
 	        String tempMediaId = "58fFYMRjJv0V94qZJ1EeGSKRQB4CbboVBC7FAILlxxZ2AzMnVVUeiOOenxgkzv9g";
+	        
+	        WxMessage wm = new WxMessage();
+	        wm.setMsgid(new Date().getTime());
+	        wm.setFromusername(fromUserName);
+	        wm.setTousername(toUserName);
+	        wm.setMediaid(tempMediaId);
+	        wm.setMsgtype("image");
+	        wm.setCreatetime(getUtcTime());
+	        messageService.save(wm);
+	        
 	        return String.format("<xml>\n" +
 	                "<ToUserName><![CDATA[%s]]></ToUserName>\n" +
 	                "<FromUserName><![CDATA[%s]]></FromUserName>\n" +
@@ -274,12 +293,12 @@ public class MessageHandler {
 	     * 构造音乐消息
 	     *
 	     * @param map
+	     * @param messageService 
 	     * @return
 	     */
-	    private static String buildMusic(Map map) {
+	    private static String buildMusic(Map map, IWxService<WxMessage> messageService) {
 	        MusicMessage msg = new MusicMessage();
 	        String fromUserName = map.get("FromUserName").toString();
-	        // 开发者微信号
 	        String toUserName = map.get("ToUserName").toString();
 
 
@@ -291,7 +310,18 @@ public class MessageHandler {
 	        msg.MusicURL = "http://7te94m.com1.z0.glb.clouddn.com/lanlianhua.mp3";
 	        msg.HQMusicUrl = "http://7te94m.com1.z0.glb.clouddn.com/lanlianhua.mp3";
 	        msg.ThumbMediaId = "kpNqTAk7tZ6NHhlHlEBhgUhfxjPBADbK79EfwF1RlOKAFcuKYC0eenD-ja-nTHg9";
-
+	        
+	        WxMessage wm = new WxMessage();
+	        wm.setMsgid(new Date().getTime());
+	        wm.setFromusername(fromUserName);
+	        wm.setTousername(toUserName);
+	        wm.setCreatetime(getUtcTime());
+	        wm.setDescription(msg.Description);
+	        wm.setTitle(msg.Title);
+	        wm.setThumbmediaid(msg.ThumbMediaId);
+	        wm.setUrl(msg.HQMusicUrl);
+	        wm.setMsgtype("music");
+	        messageService.save(wm);
 	        return String
 	                .format("<xml><ToUserName><![CDATA[%s]]></ToUserName><FromUserName><![CDATA[%s]]></FromUserName><CreateTime>%s</CreateTime><MsgType><![CDATA[music]]></MsgType><Music><Title><![CDATA[%s]]></Title><Description><![CDATA[%s]]></Description><MusicUrl><![CDATA[%s]]></MusicUrl><HQMusicUrl><![CDATA[%s]]></HQMusicUrl><ThumbMediaId><![CDATA[%s]]></ThumbMediaId></Music></xml>",
 	                        msg.Receiver, msg.Sender, getUtcTime(), msg.Title,
@@ -304,11 +334,11 @@ public class MessageHandler {
 	     * 构造图文消息
 	     *
 	     * @param map
+	     * @param messageService 
 	     * @return
 	     */
-	    private static String buildNewsMessage(Map map) {
+	    private static String buildNewsMessage(Map map, IWxService<WxMessage> messageService) {
 	        String fromUserName = map.get("FromUserName").toString();
-	        // 开发者微信号
 	        String toUserName = map.get("ToUserName").toString();
 
 	        NewsItem item = new NewsItem();
@@ -324,8 +354,19 @@ public class MessageHandler {
 	        item2.PicUrl = "http://photocdn.sohu.com/20151108/mp40396008_1446997429715_4_th_fv23.jpeg";
 	        item2.Url = "http://tech.hexun.com/2015-11-09/180434346.html";
 	        String itemContent2 = buildSingleItem(item2);
-
-
+	        
+	        WxMessage wm = new WxMessage();
+	        wm.setMsgid(new Date().getTime());
+	        wm.setFromusername(fromUserName);
+	        wm.setTousername(toUserName);
+	        wm.setTitle(item.Title);
+	        wm.setCreatetime(getUtcTime());
+	        wm.setDescription(item.Description);
+	        wm.setPicurl(item.PicUrl);
+	        wm.setUrl(item.Url);
+	        wm.setMsgtype("news");
+	        
+	        messageService.save(wm);
 	        String content = String.format("<xml>\n" +
 	                "<ToUserName><![CDATA[%s]]></ToUserName>\n" +
 	                "<FromUserName><![CDATA[%s]]></FromUserName>\n" +
@@ -362,54 +403,55 @@ public class MessageHandler {
 	     * 接收到图片消息后处理
 	     *
 	     * @param map
+	     * @param messageService 
 	     * @return
 	     */
-	    private static String handleImageMessage(Map map) {
+	    private static String handleImageMessage(Map map, IWxService<WxMessage> messageService) {
 	        String picUrl = map.get("PicUrl").toString();
 	        String mediaId = map.get("MediaId").toString();
 	        System.out.print("picUrl:"+picUrl);
 	        System.out.print("mediaId:" + mediaId);
 	        String result = String.format("已收到您发来的图片，图片Url为：%s\n图片素材Id为：%s",picUrl,mediaId);
-	        return buildTextMessage(map,result);
+	        return buildTextMessage(map,messageService,result);
 	    }
 	    
-	    private static String handleVoiceMessage(Map map){
+	    private static String handleVoiceMessage(Map map, IWxService<WxMessage> messageService){
 	        String format = map.get("Format").toString();
 	        String mediaId = map.get("MediaId").toString();
 	        System.out.print("format:"+format);
 	        System.out.print("mediaId:" + mediaId);
 	        String result = String.format("已收到您发来的语音，语音格式为：%s\n语音素材Id为：%s",format,mediaId);
-	        return buildTextMessage(map,result);
+	        return buildTextMessage(map,messageService,result);
 	    }
-	    private static String handleVideoMessage(Map map){
+	    private static String handleVideoMessage(Map map, IWxService<WxMessage> messageService){
 	        String thumbMediaId = map.get("ThumbMediaId").toString();
 	        String mediaId = map.get("MediaId").toString();
 	        System.out.print("thumbMediaId:"+thumbMediaId);
 	        System.out.print("mediaId:" + mediaId);
 	        String result = String.format("已收到您发来的视频，视频中的素材ID为：%s\n视频Id为：%s",thumbMediaId,mediaId);
-	        return buildTextMessage(map,result);
+	        return buildTextMessage(map,messageService,result);
 	    }
-	    private static String handleSmallVideoMessage(Map map){
+	    private static String handleSmallVideoMessage(Map map, IWxService<WxMessage> messageService){
 	        String thumbMediaId = map.get("ThumbMediaId").toString();
 	        String mediaId = map.get("MediaId").toString();
 	        System.out.print("thumbMediaId:"+thumbMediaId);
 	        System.out.print("mediaId:" + mediaId);
 	        String result = String.format("已收到您发来的小视频，小视频中素材ID为：%s,\n小视频Id为：%s",thumbMediaId,mediaId);
-	        return buildTextMessage(map,result);
+	        return buildTextMessage(map,messageService,result);
 	    }
-	    private static String handleLocationMessage(Map map){
+	    private static String handleLocationMessage(Map map, IWxService<WxMessage> messageService){
 	        String latitude = map.get("Location_X").toString();  //纬度
 	        String longitude = map.get("Location_Y").toString();  //经度
 	        String label = map.get("Label").toString();  //地理位置精度
 	        String result = String.format("纬度：%s\n经度：%s\n地理位置：%s",latitude,longitude,label);
-	        return buildTextMessage(map,result);
+	        return buildTextMessage(map,messageService,result);
 	    }
-	    private static String handleLinkMessage(Map map){
+	    private static String handleLinkMessage(Map map, IWxService<WxMessage> messageService){
 	        String title = map.get("Title").toString();
 	        String description = map.get("Description").toString();
 	        String url = map.get("Url").toString();
 	        String result = String.format("已收到您发来的链接，链接标题为：%s,\n描述为：%s\n,链接地址为：%s",title,description,url);
-	        return buildTextMessage(map,result);
+	        return buildTextMessage(map,messageService,result);
 	    }
 	    
 	    

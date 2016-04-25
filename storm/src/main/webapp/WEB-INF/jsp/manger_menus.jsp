@@ -27,47 +27,47 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <script type="text/javascript">
  
-$(function(){
-	$('#list_data').datagrid({ 
-        title:'应用系统列表', 
-        iconCls:'icon-edit',//图标 
-        width: 700, 
-        height: 'auto', 
-        nowrap: false, 
-        striped: true, 
-        border: true, 
-        collapsible:false,//是否可折叠的 
-        fit: false,//自动大小 
-        //sortName: 'code', 
-        //sortOrder: 'desc', 
-        remoteSort:false,  
-        idField:'fldId', 
-        singleSelect:true,//是否单选 
-        pagination:true,//分页控件 
-        rownumbers:true,//行号 
-        url:'${pageContext.request.contextPath}/menu/queryByPageSize',
-		method:'POST',
-        frozenColumns:[[ 
-            {field:'ck',checkbox:true} 
-        ]], 
- 
-    }); 
-
-	//设置分页控件 
-    var p = $('#list_data').datagrid('getPager'); 
-    $(p).pagination({ 
-        pageSize: 10,//每页显示的记录条数，默认为10 
-        pageList: [5,10,15],//可以设置每页记录条数的列表 
-        beforePageText: '第',//页数文本框前显示的汉字 
-        afterPageText: '页    共 {pages} 页', 
-        displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录', 
-        /*onBeforeRefresh:function(){
-            $(this).pagination('loading');
-            alert('before refresh');
-            $(this).pagination('loaded');
-        }*/ 
-    }); 
-});
+	$(function(){
+		$('#list_data').datagrid({ 
+	        title:'应用系统列表', 
+	        iconCls:'icon-edit',//图标 
+	        width: 'auto', 
+	        height: 'auto', 
+	        nowrap: true, 
+	        striped: true, 
+	        border: true, 
+	        collapsible:false,//是否可折叠的 
+	        fit: true,//自动大小 
+	        //sortName: 'code', 
+	        //sortOrder: 'desc', 
+	        remoteSort:false,  
+	        idField:'fldId', 
+	        singleSelect:true,//是否单选 
+	        pagination:true,//分页控件 
+	        rownumbers:true,//行号 
+	        url:'${pageContext.request.contextPath}/menu/queryByPageSize',
+			method:'POST',
+	        frozenColumns:[[ 
+	            {field:'ck',checkbox:true} 
+	        ]], 
+	 
+	    }); 
+	
+		//设置分页控件 
+	    var p = $('#list_data').datagrid('getPager'); 
+	    $(p).pagination({ 
+	        pageSize: 10,//每页显示的记录条数，默认为10 
+	        pageList: [5,10,15],//可以设置每页记录条数的列表 
+	        beforePageText: '第',//页数文本框前显示的汉字 
+	        afterPageText: '页    共 {pages} 页', 
+	        displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录', 
+	        /*onBeforeRefresh:function(){
+	            $(this).pagination('loading');
+	            alert('before refresh');
+	            $(this).pagination('loaded');
+	        }*/ 
+	    }); 
+	});
 
 		var url;
         var type;
@@ -128,9 +128,9 @@ $(function(){
 
 </head>
 
-<body style="width:100%;height:100%;">
+<body>
 	<table id="list_data" class="easyui-datagrid" cellspacing="5" toolbar="#toolbar"
-		cellpadding="5" border="fasle" split="false" pagination="true"  style="width:600px;height:400px">
+		cellpadding="5" border="fasle"  pagination="true" >
 		<thead>
 			<tr>
 				<th field="name" width="100">菜单名称</th>

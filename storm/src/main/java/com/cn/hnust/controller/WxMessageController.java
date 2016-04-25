@@ -3,7 +3,10 @@ package com.cn.hnust.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,9 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.cn.hnust.pojo.WxMessage;
 import com.cn.hnust.service.IWxService;
 
-
+@Controller
 @RequestMapping("/message")
-public class WxMessageController extends BaseController<WxMessage>{
+public class WxMessageController extends BaseController{
 	
 	@Resource
 	private IWxService<WxMessage> messageService;
@@ -98,7 +101,7 @@ public class WxMessageController extends BaseController<WxMessage>{
 		int start = (intPage-1)*number; 
 		int total = messageService.queryAll().size();
 		map.put("total", total);
-		List<WxMessage> resultList = messageService.queryByPageSize(number, intPage);
+		List<WxMessage> resultList = messageService.queryByPageSize(start, number);
 		map.put("rows", resultList);
 		logger.info("query  message  return");
 		return map;

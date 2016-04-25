@@ -41,7 +41,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			$('#tab').tabs('add', {
 				title : title,
 				content : content,
-				closable : true
+				closable : true,
+				enableConextMenu: true,
+				refreshable:true
 			});
 		}
 	}

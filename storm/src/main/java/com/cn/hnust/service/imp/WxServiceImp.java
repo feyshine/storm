@@ -20,7 +20,7 @@ public class WxServiceImp<T> implements IWxService<T> {
 
 	@Override
 	public List<T> queryByPageSize(int row,int page) {
-		return this.messageDao.querByPageSize(row, page);
+		return this.messageDao.queryByPageSize(row, page);
 	}
 
 	@Override

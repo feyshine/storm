@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.cn.hnust.pojo.WxMessage;
 import com.cn.hnust.service.IWechatService;
+import com.cn.hnust.service.IWxService;
 import com.cn.hnust.util.L;
 import com.cn.hnust.util.SignUtil;
 
@@ -22,6 +24,8 @@ public class WechatController {
 	
 	@Resource
 	private IWechatService wechatService;
+	@Resource
+	private IWxService<WxMessage> messageService;
 	
 	
 	
@@ -66,7 +70,7 @@ public class WechatController {
 			try {
 				map = MessageHandler.parseXml(request);
 				System.out.println("开始构造消息");
-				result = MessageHandler.buildXml(map, response);
+				result = MessageHandler.buildXml(map,messageService);
 				if (result.equals(""))
 					result = "未正确响应";
 			} catch (Exception e) {
