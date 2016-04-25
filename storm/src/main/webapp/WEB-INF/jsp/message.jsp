@@ -24,108 +24,112 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script src="<c:url value="/resources/jquery.min.js"/>"></script>
 	<script src="<c:url value="/resources/jquery.easyui.min.js"/>"></script>
 
-
 	<script type="text/javascript">
-	 
-		$(function(){
-			$('#list_message').datagrid({ 
-		        title:'应用系统列表', 
-		        iconCls:'icon-edit',//图标 
-		        width: 'auto', 
-		        height: 'auto', 
-		        nowrap: true, 
-		        striped: true, 
-		        border: true, 
-		        collapsible:false,//是否可折叠的 
-		        fit: true,//自动大小 
-		        //sortName: 'code', 
-		        //sortOrder: 'desc', 
-		        remoteSort:false,  
-		        idField:'fldId', 
-		        singleSelect:true,//是否单选 
-		        pagination:true,//分页控件 
-		        rownumbers:true,//行号 
-		        url:'${pageContext.request.contextPath}/message/queryByPageSize',
-				method:'POST',
-		        frozenColumns:[[ 
-		            {field:'ck',checkbox:true} 
-		        ]], 
-		 
-		    }); 
-		
+		$(function() {
+			$('#list_message').datagrid({
+				title : '应用系统列表',
+				iconCls : 'icon-edit',//图标 
+				width : 'auto',
+				height : 'auto',
+				nowrap : true,
+				striped : true,
+				border : true,
+				collapsible : false,//是否可折叠的 
+				fit : true,//自动大小 
+				//sortName: 'code', 
+				//sortOrder: 'desc', 
+				remoteSort : false,
+				idField : 'fldId',
+				singleSelect : true,//是否单选 
+				pagination : true,//分页控件 
+				rownumbers : true,//行号 
+				url : '${pageContext.request.contextPath}/message/queryByPageSize',
+				method : 'POST',
+				frozenColumns : [ [ {
+					field : 'ck',
+					checkbox : true
+				} ] ],
+	
+			});
+	
 			//设置分页控件 
-		    var p = $('#list_message').datagrid('getPager'); 
-		    $(p).pagination({ 
-		        pageSize: 10,//每页显示的记录条数，默认为10 
-		        pageList: [5,10,15],//可以设置每页记录条数的列表 
-		        beforePageText: '第',//页数文本框前显示的汉字 
-		        afterPageText: '页    共 {pages} 页', 
-		        displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录', 
-		        /*onBeforeRefresh:function(){
-		            $(this).pagination('loading');
-		            alert('before refresh');
-		            $(this).pagination('loaded');
-		        }*/ 
-		    }); 
+			var p = $('#list_message').datagrid('getPager');
+			$(p).pagination({
+				pageSize : 10,//每页显示的记录条数，默认为10 
+				pageList : [ 5, 10, 15 ],//可以设置每页记录条数的列表 
+				beforePageText : '第',//页数文本框前显示的汉字 
+				afterPageText : '页    共 {pages} 页',
+				displayMsg : '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+			/*onBeforeRefresh:function(){
+			    $(this).pagination('loading');
+			    alert('before refresh');
+			    $(this).pagination('loaded');
+			}*/
+			});
 		});
 	
-			var url;
-	        var type;
-	        function add() {
-	            $("#dlg").dialog("open").dialog('setTitle', '增加'); ;
-	            $("#fm").form("clear");
-	            url = "${pageContext.request.contextPath}/message/add";
-	            document.getElementById("hidtype").value="submit";
-	        }
-	        function edit() {
-	            var row = $("#list_message").datagrid("getSelected");
-	            if (row) {
-	                $("#dlg").dialog("open").dialog('setTitle', '编辑');
-	                $("#fm").form("load", row);
-	                url = "${pageContext.request.contextPath}/message/edit?MsgId=" + row.ID;
-	            }
-	        }
-	        function save() {
-	            $("#fm").form("submit", {
-	                url: url,
-	                onsubmit: function () {
-	                    return $(this).form("validate");
-	                },
-	                success: function (result) {
-	                	var obj = eval( "(" + result + ")" );//转换后的JSON对象
-	                    if (obj == "1") {
-	                        $.messager.alert("提示信息", "操作成功");
-	                        $("#dlg").dialog("close");
-	                        $("#list_message").datagrid("load");
-	                    }
-	                    else {
-	                        $.messager.alert("提示信息", "操作失败");
-	                    }
-	                }
-	            });
-	        }
-	        function dele() {
-	            var row = $('#list_message').datagrid('getSelected');
-	            if (row) {
-	                $.messager.confirm('确认', '你确定要删除?', function (r) {
-	                    if (r) {
-	                        $.post('${pageContext.request.contextPath}/message/delete', { MsgId: row.id }, function (result) {
-	                        	var obj = eval( "(" + result + ")" );//转换后的JSON对象
-	                            if (obj == "1") {
-	                                $('#list_message').datagrid('reload');    // reload the user data  
-	                            } else {
-	                                $.messager.show({   // show error message  
-	                                    title: 'Error',
-	                                    msg: result.errorMsg
-	                                });
-	                            }
-	                        }, 'json');
-	                    }
-	                });
-	            }
-	        }  
+		var url;
+		var type;
+		function add() {
+			$("#dlg").dialog("open").dialog('setTitle', '增加');
+			;
+			$("#fm").form("clear");
+			url = "${pageContext.request.contextPath}/message/add";
+			document.getElementById("hidtype").value = "submit";
+		}
+		function edit() {
+			var row = $("#list_message").datagrid("getSelected");
+			if (row) {
+				$("#dlg").dialog("open").dialog('setTitle', '编辑');
+				$("#fm").form("load", row);
+				url = "${pageContext.request.contextPath}/message/edit?MsgId="
+						+ row.msgid;
+			}
+		}
+		function save() {
+			$("#fm").form("submit", {
+				url : url,
+				onsubmit : function() {
+					return $(this).form("validate");
+				},
+				success : function(result) {
+					var obj = eval("(" + result + ")");//转换后的JSON对象
+					if (obj.result == "1") {
+						$.messager.alert("提示信息", obj.msg);
+						$("#dlg").dialog("close");
+						$("#list_message").datagrid("load");
+					} else {
+						$.messager.alert("提示信息", obj.msg);
+					}
+				}
+			});
+		}
+		function dele() {
+			var row = $('#list_message').datagrid('getSelected');
+			if (row) {
+				$.messager.confirm('确认', '你确定要删除?', function(r) {
+					if (r) {
+						$.post('${pageContext.request.contextPath}/message/delete',
+								{
+									MsgId : row.msgid
+								}, function(result) {
+									var obj = eval("(" + result + ")");//转换后的JSON对象
+									if (obj.result == "1") {
+										$.messager.alert("提示信息", obj.msg);
+										$('#list_message').datagrid('reload'); // reload the user data  
+									} else {
+										$.messager.show({ // show error message  
+											title : '错误',
+											msg : obj.msg
+										});
+									}
+								}, 'json');
+					}
+				});
+			}
+		}
 	</script>
-  </head>
+</head>
 	<body>
 		<table id="list_message" class="easyui-datagrid" cellspacing="5" toolbar="#toolbar"
 			cellpadding="5" border="fasle">
@@ -159,7 +163,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    
 	    <div id="dlg" class="easyui-dialog" style="width: 400px; height:auto; padding: 10px 20px;" closed="true" buttons="#dlg-buttons"> 
 	       <div class="ftitle">信息编辑 </div> 
-	       		<form id="fm" method="post"> 
+	       		<form id="fm" method="post">
+	       			<div class="fitem"> 
+	           			<label>消息ID</label><input name="msgid" class="easyui-validatebox" required="true" /> </div> 
 	       			<div class="fitem"> 
 	           			<label>接收账号 </label><input name="tousername" class="easyui-validatebox" required="true" /> </div> 
 	       			<div class="fitem">

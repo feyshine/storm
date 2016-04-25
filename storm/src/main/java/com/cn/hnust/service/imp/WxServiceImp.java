@@ -46,7 +46,7 @@ public class WxServiceImp<T> implements IWxService<T> {
 
 	@Override
 	public T queryById(Long id) {
-		return this.messageDao.selectByPrimaryKey(id);
+		return this.messageDao.queryByMsgId(id);
 	}
 
 }

@@ -72,7 +72,6 @@ public class MessageHandler {
 	    public static String buildXml(Map map,IWxService<WxMessage> messageService) {
 	        String result = "";
 	        String msgType = map.get("MsgType").toString();
-	        System.out.println("MsgType:" + msgType);
 	        MessageType messageEnumType = MessageType.valueOf(MessageType.class,
 	                msgType.toUpperCase());
 	        switch (messageEnumType) {

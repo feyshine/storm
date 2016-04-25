@@ -14,6 +14,8 @@ public interface WxMessageMapper<T> {
     int insertSelective(T record);
 
     T selectByPrimaryKey(Long id);
+    
+    T queryByMsgId(Long msgId);
 
     int updateByPrimaryKeySelective(T record);
 

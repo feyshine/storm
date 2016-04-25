@@ -1,15 +1,19 @@
 package com.cn.hnust.service.imp;
 
+import java.util.List;
+
 import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
+
 import com.cn.hnust.dao.KServiceMapper;
 import com.cn.hnust.pojo.KService;
 import com.cn.hnust.service.IKService;
 @Service("kService")
-public class KServiceImp implements IKService {
+public class KServiceImp implements IKService<KService> {
 	
 	@Resource
-	private KServiceMapper serviceDao;
+	private KServiceMapper<KService> serviceDao;
 
 	@Override
 	public void save(KService service) {
@@ -39,6 +43,18 @@ public class KServiceImp implements IKService {
 	public void updateByPrimaryKey(KService service) {
 		// TODO Auto-generated method stub
 		this.serviceDao.updateByPrimaryKey(service);
+	}
+
+	@Override
+	public List<KService> queryAll() {
+		// TODO Auto-generated method stub
+		return this.serviceDao.queryAll();
+	}
+
+	@Override
+	public List<KService> queryTByPageSize(int row, int page) {
+		// TODO Auto-generated method stub
+		return this.serviceDao.queryTByPageSize(row,page);
 	}
 
 	

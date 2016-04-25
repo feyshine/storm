@@ -26,7 +26,7 @@ public class WxMessageController extends BaseController{
 	@RequestMapping(value = "/add",method = {RequestMethod.POST})
 	public Map<String,Object> addMessage(WxMessage message){
 		Map<String,Object> map = new HashMap<String,Object>();
-		WxMessage tempMessage = messageService.queryById(message.getId());
+		WxMessage tempMessage = messageService.queryById(message.getMsgid());
 		if(tempMessage==null){
 			messageService.save(message);
 			map.put("result", 1);
@@ -45,7 +45,7 @@ public class WxMessageController extends BaseController{
 	@RequestMapping(value = "/edit",method = {RequestMethod.POST})
 	public Map<String,Object> updateMessage(WxMessage message){
 		Map<String,Object> map = new HashMap<String,Object>();
-		WxMessage tempMessage = messageService.queryById(message.getId());
+		WxMessage tempMessage = messageService.queryById(message.getMsgid());
 		if(tempMessage==null){
 			map.put("result", 0);
 			map.put("msg", "消息不存在！");
@@ -60,19 +60,19 @@ public class WxMessageController extends BaseController{
 	}
 	
 	@ResponseBody//加了这行返回json数据
-	@RequestMapping()
+	@RequestMapping(value = "/delete",method = {RequestMethod.POST})
 	public Map<String,Object> deleteMessage(WxMessage message){
 		Map<String,Object> map = new HashMap<String,Object>();
-		WxMessage tempMessage = messageService.queryById(message.getId());
-		if(tempMessage==null){
+		WxMessage wm = this.messageService.queryById(message.getMsgid());
+		if(wm==null){
 			map.put("result", 0);
-			map.put("msg", "消息不存在！");
-			logger.info("消息删除失败");
+			map.put("msg", "删除失败，消息不存在");
+			logger.info("消息删除失败，消息不存在");	
 		}else{
-			messageService.update(message);
+			messageService.delete(message.getId());
 			map.put("result", 1);
 			map.put("msg", "删除成功");
-			logger.info("消息删除成功");
+			logger.info("消息删除成功");	
 		}
 		return map;
 	}
