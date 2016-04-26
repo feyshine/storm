@@ -199,12 +199,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							{field:'action',title:'操作',width:100,align:'center',
             					formatter:function(value,row,index){
                 						if (row.editing){
-                    							var s = '<a href="javascript:void(0)" onclick="saverow('+index+')">保存</a> ';
-                    							var c = '<a href="javascript:void(0)" onclick="cancelrow('+index+')">取消</a>';
+                    							var s = '<a href="javascript:void(0)"  onclick="saverow('+index+',this)">保存</a> ';
+                    							var c = '<a href="javascript:void(0)"  onclick="cancelrow('+index+',this)">取消</a>';
                     							return s+c;
                 							} else {
-                    							var e = '<a href="javascript:void(0)" onclick="editrow('+index+')">编辑</a> ';
-                    							var d = '<a href="javascript:void(0)" onclick="deleterow('+index+')">删除</a>';
+                    							var e = '<a href="javascript:void(0)"  onclick="editrow('+index+',this)">编辑</a> ';
+                    							var d = '<a href="javascript:void(0)"  onclick="deleterow('+index+',this)">删除</a>';
                     							return e+d;
                 							}
             							}
@@ -213,18 +213,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						]],
 						onBeforeEdit:function(index,row){
         					row.editing = true;
-        					updateActions(index);
-        					//$('#list_data').datagrid('refreshRow', index);
+        					$('#list_data').datagrid('refreshRow', index);
     					},
     					onAfterEdit:function(index,row){
         					row.editing = false;
-        					updateActions(index);
-        					//$('#list_data').datagrid('refreshRow', index);
+        					$('#list_data').datagrid('refreshRow', index);
     						},
     					onCancelEdit:function(index,row){
         					row.editing = false;
-        					updateActions(index);
-        					//$('#list_data').datagrid('refreshRow', index);
+        					$('#list_data').datagrid('refreshRow', index);
     					},
 						onResize:function(){
 							$('#list_data').datagrid('fixDetailRowHeight',index);
@@ -240,37 +237,107 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             });
         });
         
-        function updateActions(index){
-			$('#list_data').datagrid('updateRow',{
-				index: index,
-				row:{}
-			});
-		}
+        function selectCurRow(obj){  
+        	var $a = $(obj);  
+        	var $tr = $a.parent().parent().parent();  
+        	var tmpId = $tr.find("td:eq(0)").text();  
+        	$obj.datagrid('selectRecord', tmpId);  
+    	}
+    	
+    	function getIndexAfterDel(){  
+        	var selected = $obj.datagrid('getSelected');  
+        	var index = $obj.datagrid('getRowIndex', selected);  
+        	return index;  
+    	}  
+        
+        function editrow(index,obj){  
+        	//selectCurRow(obj);  
+        	//var tmpIndex = getIndexAfterDel();    
+        	//$obj.datagrid('beginEdit', tmpIndex);
+        	
+        	$obj.datagrid('selectRow',index);
+			$obj.datagrid('beginEdit',index);  
+    	}
+    	
+    	function cancelrow(index,obj){  
+        	selectCurRow(obj);  
+        	var tmpIndex = getIndexAfterDel();    
+        	$obj.datagrid('cancelEdit', tmpIndex);  
+    	}   
 		
-		function getRowIndex(target){
-			var tr = $(target).closest('tr.datagrid-row');
-			return parseInt(tr.attr('datagrid-row-index'));
-		}
-		
-		function editrow(target){
-			$('#list_data').datagrid('beginEdit', getRowIndex(target));
-		}
-		
-		function deleterow(target){
-			$.messager.confirm('操作提示','你确定删除吗?',function(r){
-				if (r){
-					$('#list_data').datagrid('deleteRow', getRowIndex(target));
-				}
-			});
-		}
-		
-		function saverow(target){
-			$('#list_data').datagrid('endEdit', getRowIndex(target));
-		}
-		
-		function cancelrow(target){
-			$('#list_data').datagrid('cancelEdit', getRowIndex(target));
-		}
+		function saverow(index,obj){  
+        	selectCurRow(obj);  
+        	var tmpIndex = getIndexAfterDel();    
+        	$obj.datagrid('endEdit', tmpIndex);  
+        	var node = $obj.datagrid('getSelected');  
+        	//var data = JSON.stringify(node);  
+        	var json = {};  
+        	json.id = node.id;  
+        	json.name = node.name;  
+        	json.bkey = node.bkey;  
+        	json.type   = node.type;  
+        	json.mediaId  = node.mediaId; 
+        	json.parentid  = node.parentid; 
+        	$.ajax({  
+            	url : root + 'esbService/editOrSaveSysConfig.do',  
+            	type : 'POST',  
+            	data : json,  
+            	timeout : 60000,  
+            	success : function(data, textStatus, jqXHR) {     
+                	var msg = '';  
+                	if (data == "success") {  
+                    	$.messager.alert('提示', '保存成功！', 'info', function() {  
+                        	$obj.datagrid('refreshRow', tmpIndex);  
+                    	});  
+                	} else{  
+                    	if(data == "illegal"){  
+                        	msg = "请输入数据！";  
+                    	}else if(data == "duplicate"){  
+                        	msg = "该标识已存在！";  
+                    	}else{  
+                        	msg = "保存失败！";  
+                    	}  
+                    	$.messager.alert('提示', msg , 'error', function() {  
+                        	$obj.datagrid('beginEdit', tmpIndex);  
+                    	});  
+                	}                     
+            	}  
+        	});  
+    	}
+    	
+    	
+    	function deleterow(index,obj){  
+        	$.messager.confirm('操作提示','确认删除?',function(r){  
+            	if (r){               
+                	selectCurRow(obj);  
+                	var index = getIndexAfterDel();  
+                	var node = $obj.datagrid('getSelected');  
+                	var id = node.id;   
+                	$.ajax({  
+                    	url : root + 'esbService/removeSysConfig.do?id='+id,  
+                    	type : 'POST',                     
+                    	timeout : 60000,  
+                    	success : function(data, textStatus, jqXHR) {     
+                        	var msg = '删除';  
+                        	if(data == 'pageData') {  
+                            	$obj.datagrid('deleteRow', index);  
+                            	return;  
+                        	}else if (data == "success") {  
+                            	$obj.datagrid('deleteRow', index);  
+                            	//$obj.datagrid('reload');  
+                            	$.messager.alert('提示', msg + '成功！', 'info', function() {  
+                                //window.location.href = root + 'esbService/initSysConfig.do';  
+                            	});  
+                        	} else {  
+                            	$.messager.alert('提示', msg + '失败！', 'error', function() {  
+                                //window.location.href = root + 'esbService/initSysConfig.do';  
+                            	});  
+                        	}  
+                    	}  
+                	});   
+            	}  
+        	});  
+    	}  
     </script>
 </body>
 </html>
