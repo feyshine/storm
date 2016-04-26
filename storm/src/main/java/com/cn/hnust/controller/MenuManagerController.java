@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.cn.hnust.pojo.WxMenu;
-import com.cn.hnust.service.imp.MenuMangerServiceImp;
+
+import com.cn.hnust.pojo.Button;
+import com.cn.hnust.pojo.ComplexButton;
+import com.cn.hnust.service.IButtonService;
+import com.cn.hnust.service.IComplexButtonService;
 
 @Controller
 @RequestMapping("/menu")
@@ -22,8 +25,11 @@ public class MenuManagerController {
 	
 	private static Logger logger = LogManager.getLogger(MenuManagerController.class.getName());
 	
+
 	@Resource
-	private MenuMangerServiceImp menuMangerService;
+	private IButtonService<Button> buttonService;
+	@Resource
+	private IComplexButtonService<ComplexButton> complexButtonService;
 	
 	@RequestMapping(value = "", method = { RequestMethod.GET })
 	public String toMenusManger() {
@@ -34,7 +40,7 @@ public class MenuManagerController {
 	@RequestMapping(value = "/queryAll", method = { RequestMethod.POST })
 	public Map<String, Object> queryAllMenu(){
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<WxMenu> menuList = menuMangerService.queryAll();
+		List<ComplexButton> menuList = complexButtonService.queryAll();
 		int total = menuList.size();
 		map.put("total", total);
 		map.put("rows", menuList);
@@ -52,50 +58,128 @@ public class MenuManagerController {
         int number = Integer.parseInt((rows == null || rows == "0") ? "10":rows);
         //每页的开始记录  第一页为1  第二页为number +1   
         int start = (intPage-1)*number; 
-		List<WxMenu> totalMenuList = menuMangerService.queryAll();
+		List<ComplexButton> totalMenuList = complexButtonService.queryAll();
 		int total = totalMenuList.size();
 		map.put("total", total);
-		List<WxMenu> menuList = menuMangerService.queryWxMenuByPageSize(start, number);
+		List<ComplexButton> menuList = complexButtonService.queryByPage(start, number);
 		map.put("rows", menuList);
 		logger.info("query  menu return");
 		return map;
 	}
 	
+	@ResponseBody
+	@RequestMapping(value = "/queryChildrenByParent", method = { RequestMethod.POST })
+	public Map<String,Object> queryChildren(Long id){
+		Map<String, Object> map = new HashMap<String, Object>();
+		ComplexButton tempMenu = complexButtonService.query(id);
+		if(tempMenu == null){
+			map.put("result", 0);
+			map.put("msg", "父菜单不存在！");
+			map.put("row", null);
+			logger.info(id + "父菜单不存在！");
+		}else{
+			List<Button> children = this.buttonService.queryByParent(id+"");
+			if(children.size()>0){
+				map.put("result", 1);
+				map.put("msg", "子菜单数据加载成功！");
+				map.put("rows", children);
+				logger.info("主菜单"+id + "子菜单数据加载成功！");
+			}else{
+				map.put("result", 2);
+				map.put("msg", "暂无子菜单数据！");
+				map.put("row", null);
+				logger.info("主菜单"+id + "暂无子菜单数据！");
+			}
+		}
+		return map;
+	}
+	
 	@ResponseBody//加了这行返回json数据
 	@RequestMapping(value = "/add", method = { RequestMethod.POST })
-	public Map<String, Object> addMenus(WxMenu menu){
+	public Map<String, Object> addMenus(ComplexButton button){
 		Map<String, Object> map = new HashMap<String, Object>();
-		WxMenu tempMenu = menuMangerService.queryById(menu.getId());
-		if(tempMenu==null){
-			menuMangerService.save(menu);
+		ComplexButton tempMenu = complexButtonService.query(button.getId());
+		if(tempMenu == null){
+			complexButtonService.save(button);
 			map.put("result", 1);
 			map.put("msg", "菜单添加成功！");
-			logger.info(menu.getName() + " 保存数据库中");
+			logger.info(button.getName() + " 保存数据库中");
 		}else{
 			map.put("result", 0);
 			map.put("msg", "菜单已存在！");
-			logger.info(menu.getName() + " 已存在数据库中");
+			logger.info(button.getName() + " 已存在数据库中");
 		}
 		
 		return map;
 	}
 	
-	@ResponseBody//加了这行返回json数据
-	@RequestMapping(value = "/edit", method = { RequestMethod.POST })
-	public Map<String, Object> updateMenus(WxMenu menu){
+	@ResponseBody
+	@RequestMapping(value = "/addChild", method = { RequestMethod.POST })
+	public Map<String,Object> addChildMenu(ComplexButton parent,Button child){
 		Map<String, Object> map = new HashMap<String, Object>();
-		WxMenu tempMenu = menuMangerService.queryById(menu.getId());
+		ComplexButton tempMenu = complexButtonService.query(parent.getId());
+		if(tempMenu==null){
+			map.put("result", 0);
+			map.put("msg", "父菜单菜单不存在！");
+			logger.info(parent.getName() + "父菜单菜单不存在！");
+		}else{
+			Button temChild = this.buttonService.queryByParams(child.getId(), parent.getId()+"");
+			
+			if(temChild == null){
+				this.buttonService.save(child);
+				map.put("result", 1);
+				map.put("msg", "子菜单菜单添加成功！");
+				logger.info(child.getName() + "子菜单菜单添加成功！");
+			}else{
+				map.put("result", 0);
+				map.put("msg", "子菜单菜单已存在！");
+				logger.info(child.getName() + "子菜单菜单已存在！");
+			}
+		}
+		return map;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/edit", method = { RequestMethod.POST })
+	public Map<String, Object> updateMenus(ComplexButton button){
+		Map<String, Object> map = new HashMap<String, Object>();
+		ComplexButton tempMenu = complexButtonService.query(button.getId());
 		if(tempMenu==null){
 			map.put("result", 0);
 			map.put("msg", "菜单不存在！");
-			logger.info(menu.getName() + " has updated  faltrue");
+			logger.info(button.getName() + " has updated  faltrue");
 		}else{
-			menuMangerService.update(menu);
+			complexButtonService.update(button);
 			map.put("result", 1);
 			map.put("msg", "菜单编辑成功！");
-			logger.info(menu.getName() + " has updated  successfully");
+			logger.info(button.getName() + " has updated  successfully");
 		}
 		
+		return map;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/editChild", method = { RequestMethod.POST })
+	public Map<String,Object> updateChlidrenMenu(ComplexButton parent,Button child){
+		Map<String, Object> map = new HashMap<String, Object>();
+		ComplexButton tempMenu = complexButtonService.query(parent.getId());
+		if(tempMenu==null){
+			map.put("result", 0);
+			map.put("msg", "菜单不存在！");
+			logger.info(parent.getName() + " has updated  faltrue");
+		}else{
+			Button children = this.buttonService.queryByParams(child.getId(),parent.getId()+"");
+			if(children == null){
+				map.put("result", 0);
+				map.put("msg", "子菜单不存在！");
+				logger.info(child.getName() + "子菜单不存在！");
+			}else{
+				this.buttonService.update(child);
+				map.put("result", 1);
+				map.put("msg", "子菜单编辑成功！");
+				logger.info(child.getName() + "子菜单编辑成功！");
+			}
+		}
 		return map;
 	}
 	
@@ -103,18 +187,49 @@ public class MenuManagerController {
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST })
 	public Map<String, Object> deleteMenus(Long id){
 		Map<String, Object> map = new HashMap<String, Object>();
-		WxMenu tempMenu = menuMangerService.queryById(id);
+		ComplexButton tempMenu = complexButtonService.query(id);
 		if(tempMenu==null){
 			map.put("result", 0);
 			map.put("msg", "菜单不存在！");
 			logger.info(id + " has not in database");
 		}else{
-			menuMangerService.delete(id);;
+			List<Button> chlidren = buttonService.queryByParent(id+"");
+			if(chlidren.size()>0){
+				for(Button child:chlidren){
+					buttonService.delete(child.getId());
+				}
+			}
+			complexButtonService.delte(id);
 			map.put("result", 1);
 			map.put("msg", "菜单删除成功！");
 			logger.info(id + " has deleted  database");
 		}
 		
+		return map;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/deleteChild", method = { RequestMethod.POST })
+	public Map<String,Object> deletechildrenMenu(Long parent,Long child){
+		Map<String, Object> map = new HashMap<String, Object>();
+		ComplexButton tempMenu = complexButtonService.query(parent);
+		if(tempMenu==null){
+			map.put("result", 0);
+			map.put("msg", "菜单不存在！");
+			logger.info(parent + " has not in database");
+		}else{
+			Button tempChild = this.buttonService.queryByParams(child, parent+"");
+			if(tempChild == null){
+				map.put("result", 0);
+				map.put("msg", "子菜单不存在！");
+				logger.info(child + "子菜单不存在！");
+			}else{
+				this.buttonService.delete(child);
+				map.put("result", 1);
+				map.put("msg", "子菜单删除成功！");
+				logger.info(child + "子菜单删除成功！");
+			}
+		}
 		return map;
 	}
 
