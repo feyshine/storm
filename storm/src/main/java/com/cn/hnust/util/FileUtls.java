@@ -48,7 +48,6 @@ public class FileUtls {
 			creat(logFile);
 		}
 		new Thread(new Runnable() {
-
 			@Override
 			public void run() {
 				Writer txtWriter = null;

@@ -11,11 +11,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <base href="<%=basePath%>">
 <script type="text/javascript">
 	$(function(){
-		$('tree').tree({
-			url:'',
+		$('homemenu').tree({
+			url:'${pageContext.request.contextPath}/nodes/top',
 			lines:true,
 			onBeforeExpand:function(node,param){    
-            	$('#tree').tree('options').url = "../servlet/School_Tree?id=" + node.id;  //动态获取节点  
+            	$('#homemenu').tree('options').url = "${pageContext.request.contextPath}/nodes/children?parentid=" + node.id;  //动态获取节点  
             },    
             loadFilter: function(data){      
             	if (data.msg){      
@@ -25,7 +25,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 }      
            },  
            onClick:function(node){                      //节点的点击事件  
-           	var url='information_'+node.id+'.jsp';   
+           	var url=<%=request.getContextPath()%>+"/home/"+node.url;   
            	addTab(node.text,url);   
              }   
 		});
