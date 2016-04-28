@@ -16,7 +16,7 @@ import com.cn.hnust.service.INodesService;
 
 @Controller
 @RequestMapping("/nodes")
-public class NodesController {
+public class NodesController extends BaseController{
 	
 	@Resource
 	private INodesService<Nodes> nodesService;
@@ -26,6 +26,7 @@ public class NodesController {
 	public Map<String,Object> queryTopNodes(){
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<Nodes> topNodesSet = this.nodesService.queryTopNodes();
+		logger.info("菜单请求收到....");
 		if(topNodesSet.size()>0){
 			map.put("result", 1);
 			map.put("msg", "菜单节点获取成功");

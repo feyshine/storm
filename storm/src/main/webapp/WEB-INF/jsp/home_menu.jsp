@@ -10,28 +10,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <head>
 <base href="<%=basePath%>">
 <script type="text/javascript">
-	$(function(){
-		$('homemenu').tree({
-			url:'${pageContext.request.contextPath}/nodes/top',
-			lines:true,
-			onBeforeExpand:function(node,param){    
-            	$('#homemenu').tree('options').url = "${pageContext.request.contextPath}/nodes/children?parentid=" + node.id;  //动态获取节点  
-            },    
-            loadFilter: function(data){      
-            	if (data.msg){      
-                	return data.msg;      
-                } else {      
-                    return data;      
-                }      
-           },  
-           onClick:function(node){                      //节点的点击事件  
-           	var url=<%=request.getContextPath()%>+"/home/"+node.url;   
-           	addTab(node.text,url);   
-             }   
-		});
-	});
-
-		
 	function addTab(title, url) {
 		if ($('#tab').tabs('exists', title)) {
 			$('#tab').tabs('select', title);
@@ -53,7 +31,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <body>
 <div data-options="region:'west',border:true" title="导航" style="width:15%">
-		<ul id="homemenu" class="easyui-tree" style="margin:10px">
+	<div id="menu" class="easyui-accordion" style="position: absolute; top: 27px; left: 0px; right: 0px; bottom: 0px;">
+					<ul id="tree" class="easyui-tree" style="margin:10px">
 			<div style="margin:10px">
 			<li>
 				<span>
@@ -104,6 +83,61 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</li>
 			</div>
 		</ul>
+	</div>
 </div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$.ajax({
+		type:'post',
+		dataType:'json',
+		url:'${pageContext.request.contextPath}/nodes/top',
+		success:function(data){
+			var result = eval(data);
+			$.each(result.data,function(i,n){
+				$('#menu').accordion('add',{
+					title:n.name,
+					content:tree(n.children),//'<div style="padding:10px;agin:center"><ul name="'+n.name+'"></ul></div>',
+					selected:false
+				});
+			});
+		}
+	});
+	$('#menu').accordion({
+		onSelect:function(title,index){
+			$("ul[name='"+ title +"']").tree({
+				url:'',
+				method:'post',
+			});
+			
+		}
+	});
+	
+	function tree(parent){
+		var text="";
+		for(var i=0;i<parent.length;i++){
+			var state = parent[i].state,
+			text = '<a href ="#" onclick = "addTab(\''+state+'\',\''+parent[i].text+'\',\''+parent[i].url+'\'")>'+parent[i].text+'</a></br>'
+		}
+		return text;
+	}
+	
+	
+	function addTab(state,text,url){
+		if(state!=null && state!=''){
+			if($('#tab').tabs('exists',text)){
+				$('#tab').tabs('select', text);
+			}else{
+				var content = '<iframe scrolling="auto" frameborder="0"  src="'
+					+ url + '" style="width:100%;height:100%;"></iframe>';
+				$('#tab').tabs('add', {
+				title : text,
+				content : content,
+				closable : true,
+			   });
+		    }
+		}
+	}
+});
+</script>
 </body>
 </html>
