@@ -17,14 +17,14 @@
     from nodes
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="queryTopNodes" resultMap="BaseResultMap">
+   <select id="queryTopNodes" resultMap="BaseResultMap">
   	select * from nodes
   </select>
   <select id="queryChildNodes" resultMap="BaseResultMap">
   	select
   	<include refid="Base_Column_List" />
   	from nodes
-  	where parentid = #{parentid,jdbcType="BIGINT"}
+  	where parentid = #{parentid,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from nodes
