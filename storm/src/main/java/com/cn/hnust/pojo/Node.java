@@ -1,15 +1,19 @@
 package com.cn.hnust.pojo;
 
-public class Nodes {
+public class Node {
     private Long id;
 
-    private Long parentid;
+    private String pname;
 
     private String name;
 
     private String state;
 
     private String url;
+
+    private Boolean checked;
+
+    private String attributes;
 
     public Long getId() {
         return id;
@@ -19,12 +23,12 @@ public class Nodes {
         this.id = id;
     }
 
-    public Long getParentid() {
-        return parentid;
+    public String getPname() {
+        return pname;
     }
 
-    public void setParentid(Long parentid) {
-        this.parentid = parentid;
+    public void setPname(String pname) {
+        this.pname = pname == null ? null : pname.trim();
     }
 
     public String getName() {
@@ -49,5 +53,21 @@ public class Nodes {
 
     public void setUrl(String url) {
         this.url = url == null ? null : url.trim();
+    }
+
+    public Boolean getChecked() {
+        return checked;
+    }
+
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
+    }
+
+    public String getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(String attributes) {
+        this.attributes = attributes == null ? null : attributes.trim();
     }
 }

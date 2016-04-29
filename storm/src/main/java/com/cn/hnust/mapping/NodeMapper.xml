@@ -1,49 +1,53 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.cn.hnust.dao.NodesMapper" >
-  <resultMap id="BaseResultMap" type="com.cn.hnust.pojo.Nodes" >
+<mapper namespace="com.cn.hnust.dao.NodeMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.hnust.pojo.Node" >
     <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="parentid" property="parentid" jdbcType="BIGINT" />
+    <result column="pname" property="pname" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="state" property="state" jdbcType="VARCHAR" />
     <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="checked" property="checked" jdbcType="BIT" />
+    <result column="attributes" property="attributes" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, parentid, name, state, url
+    id, pname, name, state, url, checked, attributes
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from nodes
+    from node
     where id = #{id,jdbcType=BIGINT}
   </select>
-   <select id="queryTopNodes" resultMap="BaseResultMap">
-  	select * from nodes
+  <select id="queryTopNodes" resultMap="BaseResultMap">
+  	select * from node
   </select>
   <select id="queryChildNodes" resultMap="BaseResultMap">
   	select
   	<include refid="Base_Column_List" />
-  	from nodes
-  	where parentid = #{parentid,jdbcType=BIGINT}
+  	from node
+  	where pname = #{pname,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from nodes
+    delete from node
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.cn.hnust.pojo.Nodes" >
-    insert into nodes (id, parentid, name, 
-      state, url)
-    values (#{id,jdbcType=BIGINT}, #{parentid,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
-      #{state,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR})
+  <insert id="insert" parameterType="com.cn.hnust.pojo.Node" >
+    insert into node (id, pname, name, 
+      state, url, checked, attributes
+      )
+    values (#{id,jdbcType=BIGINT}, #{pname,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{state,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{checked,jdbcType=BIT}, #{attributes,jdbcType=VARCHAR}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.cn.hnust.pojo.Nodes" >
-    insert into nodes
+  <insert id="insertSelective" parameterType="com.cn.hnust.pojo.Node" >
+    insert into node
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
       </if>
-      <if test="parentid != null" >
-        parentid,
+      <if test="pname != null" >
+        pname,
       </if>
       <if test="name != null" >
         name,
@@ -54,13 +58,19 @@
       <if test="url != null" >
         url,
       </if>
+      <if test="checked != null" >
+        checked,
+      </if>
+      <if test="attributes != null" >
+        attributes,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="parentid != null" >
-        #{parentid,jdbcType=BIGINT},
+      <if test="pname != null" >
+        #{pname,jdbcType=VARCHAR},
       </if>
       <if test="name != null" >
         #{name,jdbcType=VARCHAR},
@@ -71,13 +81,19 @@
       <if test="url != null" >
         #{url,jdbcType=VARCHAR},
       </if>
+      <if test="checked != null" >
+        #{checked,jdbcType=BIT},
+      </if>
+      <if test="attributes != null" >
+        #{attributes,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cn.hnust.pojo.Nodes" >
-    update nodes
+  <update id="updateByPrimaryKeySelective" parameterType="com.cn.hnust.pojo.Node" >
+    update node
     <set >
-      <if test="parentid != null" >
-        parentid = #{parentid,jdbcType=BIGINT},
+      <if test="pname != null" >
+        pname = #{pname,jdbcType=VARCHAR},
       </if>
       <if test="name != null" >
         name = #{name,jdbcType=VARCHAR},
@@ -88,15 +104,23 @@
       <if test="url != null" >
         url = #{url,jdbcType=VARCHAR},
       </if>
+      <if test="checked != null" >
+        checked = #{checked,jdbcType=BIT},
+      </if>
+      <if test="attributes != null" >
+        attributes = #{attributes,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.cn.hnust.pojo.Nodes" >
-    update nodes
-    set parentid = #{parentid,jdbcType=BIGINT},
+  <update id="updateByPrimaryKey" parameterType="com.cn.hnust.pojo.Node" >
+    update node
+    set pname = #{pname,jdbcType=VARCHAR},
       name = #{name,jdbcType=VARCHAR},
       state = #{state,jdbcType=VARCHAR},
-      url = #{url,jdbcType=VARCHAR}
+      url = #{url,jdbcType=VARCHAR},
+      checked = #{checked,jdbcType=BIT},
+      attributes = #{attributes,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
