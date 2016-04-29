@@ -77,6 +77,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				$("#fm").form("load", row);
 				url = "${pageContext.request.contextPath}/kservice/edit?kfaccount="
 						+ row.kfaccount;
+				document.getElementById("hidtype").value = "submit";
 			}
 		}
 		function save() {
@@ -147,10 +148,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div>
 
 	<div id="dlg" class="easyui-dialog"
-		style="width: 400px; height:auto; padding: 10px 20px;" closed="true"
+		style="width: 400px; height:auto; padding: 10px 20px;" align="center" closed="true"
 		buttons="#dlg-buttons">
 		<div class="ftitle">信息编辑</div>
 		<form id="fm" method="post">
+			<div class="fitem">
+				<label>头像</label><input name="kfheadimgurl"  class="easyui-filebox"
+					data-options="prompt:'选择头像...'" buttonText="选择" required="true" />
+			</div>
 			<div class="fitem">
 				<label>账号 </label><input name="kfaccount"
 					class="easyui-validatebox" required="true" />
@@ -161,10 +166,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</div>
 			<div class="fitem">
 				<label>昵称</label><input name="nickname" class="easyui-vlidatebox"
-					required="true" />
-			</div>
-			<div class="fitem">
-				<label>头像地址</label><input name="kfheadimgurl" class="easyui-vlidatebox"
 					required="true" />
 			</div>
 			<div class="fitem">
