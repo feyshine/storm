@@ -9,9 +9,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
 <head>
 <base href="<%=basePath%>">
-
-<title></title>
-
+<title>菜单管理</title>
 <meta http-equiv="pragma" content="no-cache">
 <meta http-equiv="cache-control" content="no-cache">
 <meta http-equiv="expires" content="0">
@@ -181,13 +179,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						height:'auto',
 						singleSelect:true,
 						columns:[[
-							{field:'id',title:'id',width:100,align:'center'},
-							{field:'name',title:'name',width:100,align:'center',editor:{type:'validatebox',options:{required:true}}},
-							{field:'bkey',title:'key',width:100,align:'center',editor:{type:'validatebox',options:{required:true}}},
-							{field:'type',title:'type',width:100,align:'center',editor:{type:'validatebox',options:{required:true}}},
-							{field:'url',title:'url',width:100,align:'center',editor:{type:'validatebox',options:{required:true}}},
-							{field:'mediaId',title:'mediaId',width:100,align:'center',editor:{type:'validatebox',options:{required:true}}},
-							{field:'parentid',title:'parentid',width:100,align:'center',editor:{type:'validatebox',options:{required:true}}},
+							{field:'id',title:'编码',width:100,align:'center'},
+							{field:'name',title:'名称',width:100,align:'center',editor:{type:'validatebox',options:{required:true}}},
+							{field:'bkey',title:'关键字',width:100,align:'center',editor:{type:'validatebox',options:{required:true}}},
+							{field:'type',title:'类型',width:100,align:'center',editor:{type:'validatebox',options:{required:true}}},
+							{field:'url',title:'链接',width:100,align:'center',editor:{type:'validatebox',options:{required:true}}},
+							{field:'mediaId',title:'音/视屏',width:100,align:'center',editor:{type:'validatebox',options:{required:true}}},
+							{field:'parentid',title:'父菜单',width:100,align:'center',editor:{type:'validatebox',options:{required:true}}},
 							{field:'status',title:'状态',width:100,align:'center',editor:{type:'checkbox',options:{on:'P',off:''}}},
 							{field:'action',title:'操作',width:100,align:'center',
             					formatter:function(value,row,index){
