@@ -109,18 +109,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             if (row) {
                 $.messager.confirm('确认', '你确定要删除?', function (r) {
                     if (r) {
-                        $.post('${pageContext.request.contextPath}/menu/delete', { id: row.id }, function (result) {
-                        	var obj = eval( "(" + result + ")" );//转换后的JSON对象
-                            if (obj.result == "1") {
-                            	$.messager.alert("提示信息",obj.msg);
-                                $('#list_data').datagrid('reload');    // reload the user data  
-                            } else {
-                                $.messager.show({   // show error message  
-                                    title: '提示信息',
-                                    msg: obj.msg
-                                });
-                            }
-                        }, 'json');
+                        $.post(
+                        	'${pageContext.request.contextPath}/menu/delete',
+                        	{id:row.id},
+                        	function (data) {
+                            	if (data.result == "1") {
+                            		$.messager.alert("提示信息",data.msg);
+                                	$('#list_data').datagrid('reload');
+                            	} else {
+                                	$.messager.alert("提示信息",data.msg);
+                            	}
+                        	},
+                        	'json'
+                        );
                     }
                 });
             }
@@ -147,7 +148,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </div>
     
     <div id="dlg" class="easyui-dialog" style="width: 400px; height:auto; padding: 10px 20px;" closed="true" buttons="#dlg-buttons"> 
-       <div class="ftitle">信息编辑 </div> 
+       		<div class="ftitle">信息编辑 </div> 
        		<form id="fm" method="post"> 
        			<div class="fitem"> 
            			<label>编号 </label><input name="id" class="easyui-validatebox" required="true" /> </div> 
@@ -155,13 +156,40 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
        				<label>菜单名称</label><input name="name" class="easyui-validatebox" required="true" /> </div> 
        			<div class="fitem"><input type="hidden" name="action" id="hidtype" /></div> 
        			<div class="fitem"><input type="hidden" name="ID" id="Nameid" /></div> 
-       	</form>
-       	<div id="dlg-buttons"> 
-        	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="save()" iconcls="icon-save">保存</a> 
-        	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:$('#dlg').dialog('close')" iconcls="icon-cancel">取消</a> 
-    	</div> 
-   </div>
-   
+       		</form>
+       		<div id="dlg-buttons"> 
+        		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="save()" iconcls="icon-save">保存</a> 
+        		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:$('#dlg').dialog('close')" iconcls="icon-cancel">取消</a> 
+    		</div> 
+   	</div>
+   	
+   	
+   	<div id="child_dlg" class="easyui-dialog" style="width: 400px; height:auto; padding: 10px 20px;" closed="true" buttons="#child_dlg-buttons"> 
+       		<div class="ftitle">信息编辑 </div> 
+       		<form id="child_fm" method="post"> 
+       			<div class="fitem"> 
+           			<label>编号 </label><input name="id" class="easyui-validatebox" required="true" /> </div> 
+       			<div class="fitem">
+       				<label>名称</label><input name="name" class="easyui-validatebox" required="true" /> </div>
+       			<div class="fitem">
+       				<label>关键字</label><input name="bkey" class="easyui-validatebox" required="true" /> </div>
+       			<div class="fitem">
+       				<label>类型</label><input name="type" class="easyui-validatebox" required="true" /> </div>
+       			<div class="fitem">
+       				<label>链接</label><input name="url" class="easyui-validatebox" required="true" /> </div>
+       			<div class="fitem">
+       				<label>音/视频</label><input name="mediaId" class="easyui-validatebox" required="true" /> </div>
+       			<div class="fitem">
+       				<label>父菜单</label><input name="parentid" class="easyui-validatebox" required="true" /> </div>                                
+       			<div class="fitem"><input type="hidden" name="action" id="subhidtype" /></div> 
+       			<div class="fitem"><input type="hidden" name="ID" id="subNameid" /></div> 
+       		</form>
+       		<div id="child_dlg-buttons"> 
+        		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="saveChild()" iconcls="icon-save">保存</a> 
+        		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:$('#child_dlg').dialog('close')" iconcls="icon-cancel">取消</a> 
+    		</div> 
+   	</div>
+
    <script type="text/javascript">
         $(function(){
             $('#list_data').datagrid({
@@ -178,6 +206,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						loadMsg:'子菜单加载中...',
 						height:'auto',
 						singleSelect:true,
+						frozenColumns:[[ 
+	            			{field:'ck',checkbox:true} 
+	        			]],
 						columns:[[
 							{field:'id',title:'编码',width:100,align:'center'},
 							{field:'name',title:'名称',width:100,align:'center',editor:{type:'validatebox',options:{required:true}}},
@@ -202,6 +233,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         					}
 							
 						]],
+						toolbar: ["-", {
+				            id: '',
+				            text: '增加',
+				            iconCls: 'icon-add',
+				            handler: function () {
+				            	addChild(child);
+				            }
+				        }, "-", {
+				            id: '',
+				            text: '编辑',
+				            iconCls: 'icon-edit',
+				            handler: function () {
+				            	editChild(child);
+				            }
+				        }, "-", {
+				            id: '',
+				            text: '删除',
+				            iconCls: 'icon-remove',
+				            handler: function () {
+				            	deleteChild(child);
+				            }
+				        }, "-"],
 						onResize:function(){
 							$('#list_data').datagrid('fixDetailRowHeight',child);
 						},
@@ -259,7 +312,71 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		function cancelrow(child,index,target){
 		    $('#ddv-' + child).datagrid('cancelEdit', getRowIndex(child,index,target));
 		}
+		
+		var ch;
+		function addChild(child) {
+			this.ch= child;
+            $("#child_dlg").dialog("open").dialog('setTitle', '增加子菜单'); ;
+            $("#child_fm").form("clear");
+            url = "${pageContext.request.contextPath}/menu/addChild";
+            document.getElementById("subhidtype").value="submit";
+        }
+        
+        
+        function editChild(child){
+        	this.ch= child;
+            var row = $('#ddv-' + child).datagrid("getSelected");
+            if (row) {
+                $("#child_dlg").dialog("open").dialog('setTitle', '编辑子菜单');
+                $("#child_fm").form("load", row);
+                url = "${pageContext.request.contextPath}/menu/editChild?id=" + row.id;
+                document.getElementById("subhidtype").value="submit";
+            }
+        }
+        
+        
+        function deleteChild(child){
+        var row = $('#ddv-' + child).datagrid('getSelected');
+            if (row) {
+                $.messager.confirm('确认', '你确定要删除?', function (r) {
+                    if (r) {
+                        $.post(
+                        	'${pageContext.request.contextPath}/menu/deleteChild', 
+                        	{id: row.id,parentId: row.parentid},
+                        	function (data) {
+                            	if (data.result == "1") {
+                            		$.messager.alert("提示信息",data.msg);
+                                	$('#ddv-' + child).datagrid('reload');    // reload the user data  
+                            	} else {
+                                	$.messager.alert('提示信息',data.msg);
+                            	}
+                        	},
+                        	'json'
+                       );
+                    }
+                });
+            }
+        }
 
+        function saveChild() {
+            $("#child_fm").form("submit", {
+                url: url,
+                onsubmit: function () {
+                    return $(this).form("validate");
+                },
+                success: function (result) {
+                	var obj = eval( "(" + result + ")" );//转换后的JSON对象
+                    if (obj.result == "1") {
+                        $.messager.alert("提示信息", obj.msg);
+                        $("#child_dlg").dialog("close");
+                        $('#ddv-' + ch).datagrid("load");
+                    }
+                    else {
+                        $.messager.alert("提示信息",obj.msg);
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>

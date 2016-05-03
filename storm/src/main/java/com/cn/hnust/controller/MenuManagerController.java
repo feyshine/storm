@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -115,21 +116,29 @@ public class MenuManagerController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/addChild", method = { RequestMethod.POST })
-	public Map<String,Object> addChildMenu(ComplexButton parent,Button child){
+	public Map<String,Object> addChildMenu(Button child){
 		Map<String, Object> map = new HashMap<String, Object>();
-		ComplexButton tempMenu = complexButtonService.query(parent.getId());
+		ComplexButton tempMenu = complexButtonService.query(Long.valueOf(child.getParentid()));
 		if(tempMenu==null){
 			map.put("result", 0);
 			map.put("msg", "父菜单菜单不存在！");
-			logger.info(parent.getName() + "父菜单菜单不存在！");
+			logger.info(child.getName() + "的父菜单不存在！");
 		}else{
-			Button temChild = this.buttonService.queryByParams(child.getId(), parent.getId()+"");
+			
+			Button temChild = this.buttonService.queryByParams(child.getId(), child.getParentid());
+			Button IdDuplicate = this.buttonService.query(child.getId());//数据库id主键不能重复，且自增
 			
 			if(temChild == null){
-				this.buttonService.save(child);
-				map.put("result", 1);
-				map.put("msg", "子菜单菜单添加成功！");
-				logger.info(child.getName() + "子菜单菜单添加成功！");
+				if(IdDuplicate!=null){
+					map.put("result", 0);
+					map.put("msg", "子菜单ID不能重复，重新填写！");
+					logger.info(child.getName() + "子菜单ID不能重复，重新填写！");
+				}else{
+					this.buttonService.save(child);
+					map.put("result", 1);
+					map.put("msg", "子菜单菜单添加成功！");
+					logger.info(child.getName() + "子菜单菜单添加成功！");
+				}
 			}else{
 				map.put("result", 0);
 				map.put("msg", "子菜单菜单已存在！");
@@ -160,24 +169,24 @@ public class MenuManagerController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/editChild", method = { RequestMethod.POST })
-	public Map<String,Object> updateChlidrenMenu(ComplexButton parent,Button child){
+	public Map<String,Object> updateChlidrenMenu(Button button){
 		Map<String, Object> map = new HashMap<String, Object>();
-		ComplexButton tempMenu = complexButtonService.query(parent.getId());
+		ComplexButton tempMenu = complexButtonService.query(Long.valueOf(button.getParentid()));
 		if(tempMenu==null){
 			map.put("result", 0);
 			map.put("msg", "菜单不存在！");
-			logger.info(parent.getName() + " has updated  faltrue");
+			logger.info(button.getName() + "菜单不存在！");
 		}else{
-			Button children = this.buttonService.queryByParams(child.getId(),parent.getId()+"");
+			Button children = this.buttonService.queryByParams(button.getId(),button.getParentid());
 			if(children == null){
 				map.put("result", 0);
 				map.put("msg", "子菜单不存在！");
-				logger.info(child.getName() + "子菜单不存在！");
+				logger.info(button.getName() + "子菜单不存在！");
 			}else{
-				this.buttonService.update(child);
+				this.buttonService.update(button);
 				map.put("result", 1);
 				map.put("msg", "子菜单编辑成功！");
-				logger.info(child.getName() + "子菜单编辑成功！");
+				logger.info(button.getName() + "子菜单编辑成功！");
 			}
 		}
 		return map;
@@ -210,24 +219,24 @@ public class MenuManagerController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/deleteChild", method = { RequestMethod.POST })
-	public Map<String,Object> deletechildrenMenu(Long parent,Long child){
+	public Map<String,Object> deletechildrenMenu(String parentId,Long id){
 		Map<String, Object> map = new HashMap<String, Object>();
-		ComplexButton tempMenu = complexButtonService.query(parent);
+		ComplexButton tempMenu = complexButtonService.query(Long.valueOf(parentId));
 		if(tempMenu==null){
 			map.put("result", 0);
 			map.put("msg", "菜单不存在！");
-			logger.info(parent + " has not in database");
+			logger.info(parentId + " has not in database");
 		}else{
-			Button tempChild = this.buttonService.queryByParams(child, parent+"");
+			Button tempChild = this.buttonService.queryByParams(id, parentId);
 			if(tempChild == null){
 				map.put("result", 0);
 				map.put("msg", "子菜单不存在！");
-				logger.info(child + "子菜单不存在！");
+				logger.info(id + "子菜单不存在！");
 			}else{
-				this.buttonService.delete(child);
+				this.buttonService.delete(id);
 				map.put("result", 1);
 				map.put("msg", "子菜单删除成功！");
-				logger.info(child + "子菜单删除成功！");
+				logger.info(id + "子菜单删除成功！");
 			}
 		}
 		return map;

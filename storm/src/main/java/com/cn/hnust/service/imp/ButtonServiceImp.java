@@ -29,8 +29,7 @@ public class ButtonServiceImp implements IButtonService<Button> {
 
 	@Override
 	public Button query(Long id) {
-		this.buttonDao.selectByPrimaryKey(id);
-		return null;
+		return this.buttonDao.selectByPrimaryKey(id);
 	}
 
 	@Override
