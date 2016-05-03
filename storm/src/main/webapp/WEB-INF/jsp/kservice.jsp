@@ -103,21 +103,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			if (row) {
 				$.messager.confirm('确认', '你确定要删除?', function(r) {
 					if (r) {
-						$.post('${pageContext.request.contextPath}/kservice/delete',
-								{
-									kfaccount : row.kfaccount
-								}, function(result) {
-									var obj = eval("(" + result + ")");//转换后的JSON对象
-									if (obj.result == "1") {
-										$('#list_kservice').datagrid('reload');// reload the user data  
-										$.messager.alert("提示信息", obj.msg); 
+						$.post(
+							'${pageContext.request.contextPath}/kservice/delete',
+							{kfaccount : row.kfaccount},
+							function(data) {
+								if (data.result == "1") {
+									$('#list_kservice').datagrid('reload');
+										$.messager.alert("提示信息", data.msg); 
 									} else {
-										$.messager.show({ // show error message  
-											title : '错误',
-											msg : obj.msg
-										});
+									$.messager.alert("提示信息",data.msg);
 									}
-								}, 'json');
+							},
+							'json'
+						);
 					}
 				});
 			}
