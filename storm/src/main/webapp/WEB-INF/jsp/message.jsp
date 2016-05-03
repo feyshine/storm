@@ -117,7 +117,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									$.messager.alert("提示信息", data.msg);
 									$('#list_message').datagrid('reload');
 								} else {
-									$.messager.alert('错误',obj.msg);
+									$.messager.alert('错误',data.msg);
 								}
 							},
 							'json'

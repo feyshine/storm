@@ -59,17 +59,18 @@ public class WxMessageController extends BaseController{
 		return map;
 	}
 	
-	@ResponseBody//加了这行返回json数据
+	@ResponseBody
 	@RequestMapping(value = "/delete",method = {RequestMethod.POST})
-	public Map<String,Object> deleteMessage(WxMessage message){
+	public Map<String,Object> deleteMessage(Long MsgId){
 		Map<String,Object> map = new HashMap<String,Object>();
-		WxMessage wm = this.messageService.queryById(message.getMsgid());
+		logger.info("msgid = " +MsgId);
+		WxMessage wm = this.messageService.queryById(MsgId);
 		if(wm==null){
 			map.put("result", 0);
 			map.put("msg", "删除失败，消息不存在");
 			logger.info("消息删除失败，消息不存在");	
 		}else{
-			messageService.delete(message.getId());
+			messageService.delete(wm.getId());
 			map.put("result", 1);
 			map.put("msg", "删除成功");
 			logger.info("消息删除成功");	

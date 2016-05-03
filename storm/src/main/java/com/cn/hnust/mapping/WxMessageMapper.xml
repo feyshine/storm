@@ -31,10 +31,8 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="queryByMsgId" resultMap="BaseResultMap">
-  	select 
-    <include refid="Base_Column_List" />
-    from wx_message
-    where id = #{MsgId,jdbcType=BIGINT}
+  	select * from wx_message
+    where MsgId = #{MsgId,jdbcType=BIGINT}
   </select>
   <select id="queryAll" resultMap="BaseResultMap">
   	select * from wx_message
