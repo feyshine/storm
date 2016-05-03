@@ -15,6 +15,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link href="<c:url value="/resources/dialog.css"/>" rel="stylesheet">
 	<script src="<c:url value="/resources/jquery.min.js"/>"></script>
 	<script src="<c:url value="/resources/jquery.easyui.min.js"/>"></script>
+	<script src="<c:url value="/resources/ajaxfileupload.js"/>"></script>
 	
 	<title>微信客服中心</title>
 	<script type="text/javascript">
@@ -120,6 +121,37 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				});
 			}
 		}
+		
+		function oncur(){
+			if($("#kfheadimgurl").val().length > 0){
+				ajaxUpLoadFile();
+			}else{
+			  	alert("请选择图片");
+			}
+		}
+		
+		function ajaxUpLoadFile(){
+			$.ajaxFileUpload({
+				url:'${pageContext.request.contextPath}/kservice/upload',
+				secureuri:false,
+				fileElementId:'kfheadimgurl',
+				type:'post',
+				dataType:'json',
+				error:function (data,status,e){
+				  alert(e);
+				},
+				success:function (data, status){
+				
+					 if (typeof (data.error) != 'undefined') {
+                            if (data.error != '') {
+                                alert(data.error);
+                            } else {
+                                alert(data.msg);
+                            }
+                        }
+				}
+			});
+		}
 	</script>
 	
 </head>
@@ -149,10 +181,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		style="width: 400px; height:auto; padding: 10px 20px;" align="center" closed="true"
 		buttons="#dlg-buttons">
 		<div class="ftitle">信息编辑</div>
-		<form id="fm" method="post">
+		<form id="fm" method="post" enctype="multipart/form-data">
 			<div class="fitem">
-				<label>头像</label><input name="kfheadimgurl"  class="easyui-filebox"
-					data-options="prompt:'选择头像...'" buttonText="选择" required="true" />
+				<label>头像</label><input id="kfheadimgurl" name="kfheadimgurl"  class="easyui-filebox"
+					data-options="prompt:'选择头像...'" buttonText="选择" required="true" onBlur="oncur()"/>
 			</div>
 			<div class="fitem">
 				<label>账号 </label><input name="kfaccount"
