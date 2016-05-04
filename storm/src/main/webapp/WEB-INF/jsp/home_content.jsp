@@ -11,7 +11,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
-   <div region="center" border="true" title ="" split="true">
+   <div region="center" border="true" title ="" split="true" style="width:85%;height:90%">
 			<div id="tab" class="easyui-tabs"  border="false">
 				<div title="首页" data-options="closeable:true" style="position:relative;padding: 20px; display: none;">
 						

@@ -72,7 +72,7 @@ $(document).ready(function(){
 				$('#tab').tabs('select', text);
 			}else{
 				var content = '<iframe scrolling="auto" frameborder="0"  src="'
-					+ url + '" style="width:100%;height:100%;"></iframe>';
+					+ url + '" style="width:100%;height:95%;"></iframe>';
 				$('#tab').tabs('add', {
 				title : text,
 				content : content,
@@ -85,7 +85,7 @@ $(document).ready(function(){
 </head>
 
 <body>
-<div data-options="region:'west',border:true" title="导航" style="width:15%">
+<div data-options="region:'west',border:true" title="导航" style="width:15%;height:90%">
 	<div id="menu" class="easyui-accordion" style="position: absolute; top: 27px; left: 0px; right: 0px; bottom: 0px;">
 
 	</div>
