@@ -133,22 +133,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			cellpadding="5" border="fasle">
 			<thead>
 				<tr>
-					<th field="msgid" width="100">消息ID</th>
-					<th field="tousername" width="100">接收账号</th>
-					<th field="fromusername" width="150">发送账号</th>
-					<th field="createtime" width="100">消息创建时间</th>
-					<th field="msgtype" width="100">消息类型</th>
-					<th field="content" width="100">消息内容</th>
-					<th field="picurl" width="100">图片链接</th>
-					<th field="mediaid" width="100">图片/语音消息媒体</th>
-					<th field="format" width="100">语音格式</th>
-					<th field="thumbmediaid" width="100">视频消息缩略图</th>
-					<th field="locationX" width="100">地理位置维度</th>
-					<th field="locationY" width="100">地理位置经度</th>
-					<th field="scale" width="100">地图缩放大小</th>
-					<th field="title" width="100">消息标题</th>
-					<th field="description" width="100">消息描述</th>
-					<th field="url" width="100">消息链接</th>
+					<th field="msgid" width="200">消息ID</th>
+					<th field="tousername" width="200">接收账号</th>
+					<th field="fromusername" width="250">发送账号</th>
+					<th field="createtime" width="200">消息创建时间</th>
+					<th field="msgtype" width="200">消息类型</th>
+					<th field="content" width="300">消息内容</th>
+					<th field="picurl" width="300">图片链接</th>
+					<th field="mediaid" width="300">图片/语音消息媒体</th>
+					<th field="format" width="200">语音格式</th>
+					<th field="thumbmediaid" width="200">视频消息缩略图</th>
+					<th field="locationX" width="200">地理位置维度</th>
+					<th field="locationY" width="200">地理位置经度</th>
+					<th field="scale" width="200">地图缩放大小</th>
+					<th field="title" width="300">消息标题</th>
+					<th field="description" width="500">消息描述</th>
+					<th field="url" width="300">消息链接</th>
 				</tr>
 			</thead>
 	

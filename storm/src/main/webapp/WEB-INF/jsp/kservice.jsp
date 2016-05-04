@@ -15,7 +15,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link href="<c:url value="/resources/dialog.css"/>" rel="stylesheet">
 	<script src="<c:url value="/resources/jquery.min.js"/>"></script>
 	<script src="<c:url value="/resources/jquery.easyui.min.js"/>"></script>
-	<script src="<c:url value="/resources/ajaxfileupload.js"/>"></script>
 	
 	<title>微信客服中心</title>
 	<script type="text/javascript">
@@ -121,37 +120,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				});
 			}
 		}
-		
-		function oncur(){
-			if($("#kfheadimgurl").val().length > 0){
-				ajaxUpLoadFile();
-			}else{
-			  	alert("请选择图片");
-			}
-		}
-		
-		function ajaxUpLoadFile(){
-			$.ajaxFileUpload({
-				url:'${pageContext.request.contextPath}/kservice/upload',
-				secureuri:false,
-				fileElementId:'kfheadimgurl',
-				type:'post',
-				dataType:'json',
-				error:function (data,status,e){
-				  alert(e);
-				},
-				success:function (data, status){
-				
-					 if (typeof (data.error) != 'undefined') {
-                            if (data.error != '') {
-                                alert(data.error);
-                            } else {
-                                alert(data.msg);
-                            }
-                        }
-				}
-			});
-		}
 	</script>
 	
 </head>
@@ -160,10 +128,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		toolbar="#toolbar" cellpadding="5" border="fasle">
 		<thead>
 			<tr>
-				<th field="kfaccount" width="100">账号</th>
-				<th field="password" width="100">密码</th>
-				<th field="nickname" width="150">昵称</th>
-				<th field="kfheadimgurl" width="100">头像地址</th>
+				<th field="kfaccount" width="200">账号</th>
+				<th field="password" width="200">密码</th>
+				<th field="nickname" width="250">昵称</th>
+				<th field="kfheadimgurl" width="300">头像地址</th>
 			</tr>
 		</thead>
 
@@ -183,8 +151,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<div class="ftitle">信息编辑</div>
 		<form id="fm" method="post" enctype="multipart/form-data">
 			<div class="fitem">
-				<label>头像</label><input id="kfheadimgurl" name="kfheadimgurl"  class="easyui-filebox"
-					data-options="prompt:'选择头像...'" buttonText="选择" required="true" onBlur="oncur()"/>
+				<label>头像</label><input id="kfheadimgurl" name="file"  class="easyui-filebox"
+					data-options="prompt:'选择头像...'" buttonText="选择" required="true" accept="image/gif,image/jpeg,image/png"/>
 			</div>
 			<div class="fitem">
 				<label>账号 </label><input name="kfaccount"

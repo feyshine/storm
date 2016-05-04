@@ -36,32 +36,83 @@ public class KServiceController extends BaseController{
 	
 	@ResponseBody
 	@RequestMapping(value = "/add",method = {RequestMethod.POST})
-	public Map<String,Object> addKService(@ModelAttribute KService kservice){
+	public Map<String,Object> addKService(@RequestParam("file") MultipartFile file,KService kservice,HttpServletRequest request){
 		Map<String,Object> map = new HashMap<String,Object>();
-		NetWorkHelper workHelper = new NetWorkHelper();
-		String token = FileUtls.read(FileUtls.PATH);
-		L.i(TAG, "token" + token);
-		String url = String.format(Config.add_customer_service_url,token);
-		kservice.setKfaccount(kservice.getKfaccount()+"@xuyelijia");
-		String jsonStr = JSON.toJSONString(kservice);
-		L.i("json", jsonStr);
-		String result = workHelper.postHttpsResponse(url, jsonStr);
-		ResponseResult addresult = JSON.parseObject(result, ResponseResult.class);
-		if(addresult == null){
-			L.i(TAG, "服务器返回 null");
+//		NetWorkHelper workHelper = new NetWorkHelper();
+//		String token = FileUtls.read(FileUtls.PATH);
+//		L.i(TAG, "token" + token);
+//		String url = String.format(Config.add_customer_service_url,token);
+//		kservice.setKfaccount(kservice.getKfaccount()+"@xuyelijia");
+//		String jsonStr = JSON.toJSONString(kservice);
+//		L.i("json", jsonStr);
+//		String result = workHelper.postHttpsResponse(url, jsonStr);
+//		ResponseResult addresult = JSON.parseObject(result, ResponseResult.class);
+//		if(addresult == null){
+//			L.i(TAG, "服务器返回 null");
+//		}else{
+//			if(addresult.getErrcode()!= null && addresult.getErrcode().equals("0")){
+//				L.i(TAG, "添加客服成功！");
+//				kService.save(kservice);
+//				map.put("result", 1);
+//				map.put("msg", "添加成功");
+//			}else{
+//				map.put("result", 0);
+//				map.put("msg", "添加失败");
+//				L.i(TAG, "添加客服失败！err = " + addresult.getErrmsg());
+//			}
+//		}
+		if(saveFiles(file,getFilePath(request))){
+			kservice.setKfheadimgurl(getFilePath(request));
+			this.kService.save(kservice);
+			map.put("result", 1);
+			map.put("msg", "添加成功");
 		}else{
-			if(addresult.getErrcode()!= null && addresult.getErrcode().equals("0")){
-				L.i(TAG, "添加客服成功！");
-				kService.save(kservice);
-				map.put("result", 1);
-				map.put("msg", "添加成功");
-			}else{
-				map.put("result", 0);
-				map.put("msg", "添加失败");
-				L.i(TAG, "添加客服失败！err = " + addresult.getErrmsg());
+			map.put("result", 0);
+			map.put("msg", "头像上传失败！");
+		};
+		
+		return map;
+	}
+
+	/**
+	 * @param request
+	 * @return
+	 */
+	private String getFilePath(HttpServletRequest request) {
+		String realPath = request.getSession().getServletContext().getRealPath("/WEB-INF/upload");
+		return realPath;
+	}
+
+	/**
+	 * @param file
+	 * @param kservice
+	 * @param request
+	 * @param map
+	 */
+	private boolean saveFiles(MultipartFile file, String path) {
+		boolean flag = false;
+		if (file.isEmpty()) {
+			logger.info("文件未上传");
+			flag = false;
+		} else {
+			logger.info("文件长度: " + file.getSize());
+			logger.info("文件类型: " + file.getContentType());
+			logger.info("文件名称: " + file.getName());
+			logger.info("文件原名: " + file.getOriginalFilename());
+			logger.info("realPath = " + path);
+			logger.info("========================================");
+			try {
+				// 这里不必处理IO流关闭的问题，因为FileUtils.copyInputStreamToFile()方法内部会自动把用到的IO流关掉，我是看它的源码才知道的
+				FileUtils.copyInputStreamToFile(file.getInputStream(),
+						new File(path, file.getOriginalFilename()));
+				flag = true;
+			} catch (IOException e) {
+				e.printStackTrace();
+				logger.info("io异常  =" + e);
 			}
 		}
-		return map;
+
+		return flag;
 	}
 	
 	@RequestMapping(value = "", method = { RequestMethod.GET })
@@ -87,16 +138,23 @@ public class KServiceController extends BaseController{
 	
 	@ResponseBody
 	@RequestMapping(value = "/edit",method = {RequestMethod.POST})
-	public Map<String,Object> updateKService(KService service){
+	public Map<String,Object> updateKService(@RequestParam("file") MultipartFile file,KService service,HttpServletRequest request){
 		Map<String,Object> map = new HashMap<String,Object>();
 		KService temService = this.kService.select(service.getKfaccount());
 		if(temService==null){
 			map.put("result", 0);
 			map.put("msg", "客服账号不存在");
 		}else{
-			this.kService.updateByPrimaryKey(service);
-			map.put("result", 1);
-			map.put("msg", "编辑成功");
+			if (saveFiles(file,getFilePath(request))) {
+				service.setKfheadimgurl(getFilePath(request));
+				this.kService.updateByPrimaryKey(service);
+				map.put("result", 1);
+				map.put("msg", "编辑成功");
+			}else{
+				map.put("result", 0);
+				map.put("msg", "编辑失败,重新编辑！");
+			}
+			
 		}
 		return map;
 	}
@@ -145,8 +203,7 @@ public class KServiceController extends BaseController{
 				logger.info("文件名称: " + file.getName());  
 				logger.info("文件原名: " + file.getOriginalFilename());  
 				logger.info("========================================"); 
-				//如果用的是Tomcat服务器，则文件会上传到\\%TOMCAT_HOME%\\webapps\\YourWebProject\\WEB-INF\\upload\\文件夹中  
-                String realPath = request.getSession().getServletContext().getRealPath("/WEB-INF/upload");
+				String realPath = getFilePath(request);
                 try {
                 	//这里不必处理IO流关闭的问题，因为FileUtils.copyInputStreamToFile()方法内部会自动把用到的IO流关掉，我是看它的源码才知道的  
 					FileUtils.copyInputStreamToFile(file.getInputStream(), new File(realPath, file.getOriginalFilename()));
