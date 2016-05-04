@@ -43,19 +43,6 @@ public class MenuManagerController {
 	public String toMenusManger() {
 		return "manger_menus";
 	}
-	
-	@ResponseBody//加了这行返回json数据
-	@RequestMapping(value = "/queryAll", method = { RequestMethod.POST })
-	public Map<String, Object> queryAllMenu(){
-		Map<String, Object> map = new HashMap<String, Object>();
-		List<ComplexButton> menuList = complexButtonService.queryAll();
-		int total = menuList.size();
-		map.put("total", total);
-		map.put("rows", menuList);
-		logger.info("query all menu return");
-		return map;
-	}
-	
 	@ResponseBody//加了这行返回json数据
 	@RequestMapping(value = "/queryByPageSize", method = { RequestMethod.POST })
 	public Map<String, Object> queryWxMenuByPageSize(@RequestParam(value = "page", required = false) String page,@RequestParam(value = "rows", required = false) String rows){
@@ -74,7 +61,6 @@ public class MenuManagerController {
 		map.put("total", total);
 		List<ComplexButton> menuList = complexButtonService.queryByPage(start, number);
 		map.put("rows", menuList);
-		logger.info("query  menu return");
 		return map;
 	}
 
@@ -84,12 +70,13 @@ public class MenuManagerController {
 	 */
 	private void saveTopButtons(
 			List<com.cn.hnust.wx.api.req.entity.ComplexButton> list) {
+		if(list==null||list.size() ==0) return;
 		for(com.cn.hnust.wx.api.req.entity.ComplexButton button:list){
 			ComplexButton tableButton = new ComplexButton();
 			tableButton.setId(new Date().getTime());
 			tableButton.setName(button.getName());
-			tableButton.setMkey("null");
-			tableButton.setType("null");
+			tableButton.setMkey(button.getKey());
+			tableButton.setType(button.getType());
 			this.complexButtonService.save(tableButton);
 			logger.info("save tableButton.name:" + tableButton.getName());
 			saveSubButton(button, tableButton);
@@ -142,7 +129,6 @@ public class MenuManagerController {
 		String result = menuHelper.getHttpsResponse(url, "GET");
 		logger.info("weixin server response menulist :" + result);
 		List<com.cn.hnust.wx.api.req.entity.ComplexButton> list = ParseMenu.parseComplexButton(result);
-		logger.info("weixin ComplexButton list.size :" +list.size());
 		return list;
 	}
 	
@@ -164,10 +150,10 @@ public class MenuManagerController {
 				map.put("rows", children);
 				logger.info("主菜单"+id + "子菜单数据加载成功！");
 			}else{
-				map.put("result", 2);
+				map.put("result", 0);
 				map.put("msg", "暂无子菜单数据！");
 				map.put("row", null);
-				logger.info("主菜单"+id + "暂无子菜单数据！");
+				logger.info("主菜单编码："+id + "，暂无子菜单数据！");
 			}
 		}
 		return map;
@@ -214,6 +200,7 @@ public class MenuManagerController {
 		NetWorkHelper menuHelper = new NetWorkHelper();
 		String url = String.format(Config.creat_menu_url,TokenThread.accessToken.getAccessToken());
 		String jsonMenu = CreateMenuFactory.creatTopMenu(button);
+		logger.info("request json menu :" + jsonMenu);
 		String result = menuHelper.postHttpsResponse(url, jsonMenu);
 		ResponseResult menuresult = JSON.parseObject(result, ResponseResult.class);
 		if(menuresult == null){
@@ -343,25 +330,58 @@ public class MenuManagerController {
 	@RequestMapping(value = "/delete", method = { RequestMethod.POST })
 	public Map<String, Object> deleteMenus(Long id){
 		Map<String, Object> map = new HashMap<String, Object>();
-		ComplexButton tempMenu = complexButtonService.query(id);
-		if(tempMenu==null){
-			map.put("result", 0);
-			map.put("msg", "菜单不存在！");
-			logger.info(id + " has not in database");
-		}else{
-			List<Button> chlidren = buttonService.queryByParent(id+"");
-			if(chlidren.size()>0){
-				for(Button child:chlidren){
-					buttonService.delete(child.getId());
+		int result = syncDeleteButtons();
+		switch (result) {
+		case 1:
+			ComplexButton tempMenu = complexButtonService.query(id);
+			if(tempMenu==null){
+				map.put("result", 0);
+				map.put("msg", "菜单不存在！");
+				logger.info(id + " has not in database");
+			}else{
+				List<Button> chlidren = buttonService.queryByParent(id+"");
+				if(chlidren.size()>0){
+					for(Button child:chlidren){
+						buttonService.delete(child.getId());
+					}
 				}
+				complexButtonService.delte(id);
+				map.put("result", 1);
+				map.put("msg", "菜单删除成功！");
+				logger.info(id + " has deleted  database");
 			}
-			complexButtonService.delte(id);
-			map.put("result", 1);
-			map.put("msg", "菜单删除成功！");
-			logger.info(id + " has deleted  database");
+			break;
+		case 2:
+			map.put("result", 0);
+			map.put("msg", "菜单删除失败！");
+			break;
+		case 3:
+			map.put("result", 0);
+			map.put("msg", "微信服务器返回空，菜单删除失败！");
+			break;
+			
+		default:
+			break;
 		}
-		
 		return map;
+	}
+
+	/**
+	 * 删除自定义菜单
+	 */
+	private int syncDeleteButtons() {
+		NetWorkHelper menuHelper = new NetWorkHelper();
+		String url = String.format(Config.delete_menu_url,TokenThread.accessToken.getAccessToken());
+		String result = menuHelper.getHttpsResponse(url, "GET");
+		ResponseResult menuresult = JSON.parseObject(result, ResponseResult.class);
+		if(menuresult == null){
+			return 3;
+		}
+		if(menuresult.getErrcode()!= null && menuresult.getErrcode().equals("0")){
+			return 1;
+		}else {
+			return 2;
+		}
 	}
 	
 	@ResponseBody

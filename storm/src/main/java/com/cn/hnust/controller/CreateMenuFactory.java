@@ -22,7 +22,9 @@ public class CreateMenuFactory {
 
 	private static Menu getTopMenu(com.cn.hnust.pojo.ComplexButton button) {
 		ComplexButton topButton = new ComplexButton();
+		topButton.setType(button.getType());
 		topButton.setName(button.getName());
+		topButton.setKey(button.getMkey());
 		Menu menuHelp = new Menu();
 		menuHelp.setButton(new Button[] {topButton});
 		return menuHelp;

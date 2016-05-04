@@ -13,6 +13,7 @@ public class ParseMenu {
 	public static List<ComplexButton> parseComplexButton(String json){
 		JSONObject jb = JSON.parseObject(json);
 		JSONObject subjb = jb.getJSONObject("menu");
+		if(subjb==null) return null;
 		JSONArray ja = subjb.getJSONArray("button"); 
 		List<ComplexButton> list = JSON.parseArray(ja.toString(), ComplexButton.class);
 		return list;

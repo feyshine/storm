@@ -55,7 +55,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	});
 
 		var url;
-        var type;
         function add() {
             $("#dlg").dialog("open").dialog('setTitle', '增加菜单'); ;
             $("#fm").form("clear");
