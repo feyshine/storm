@@ -1,10 +1,10 @@
 package com.cn.hnust.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.cn.hunst.req.Button;
-import com.cn.hunst.req.CommonButton;
-import com.cn.hunst.req.ComplexButton;
-import com.cn.hunst.req.Menu;
+import com.cn.hnust.wx.api.req.entity.Button;
+import com.cn.hnust.wx.api.req.entity.CommonButton;
+import com.cn.hnust.wx.api.req.entity.ComplexButton;
+import com.cn.hnust.wx.api.req.entity.Menu;
 
 public class CreateMenuFactory {
 
@@ -13,6 +13,45 @@ public class CreateMenuFactory {
 		String jsonMenu = JSON.toJSONString(menu);
 		return jsonMenu;
 	}
+	
+	
+	public static String creatTopMenu(com.cn.hnust.pojo.ComplexButton button){
+		Menu menu = getTopMenu(button);
+		return JSON.toJSONString(menu);
+	}
+
+	private static Menu getTopMenu(com.cn.hnust.pojo.ComplexButton button) {
+		ComplexButton topButton = new ComplexButton();
+		topButton.setName(button.getName());
+		Menu menuHelp = new Menu();
+		menuHelp.setButton(new Button[] {topButton});
+		return menuHelp;
+	}
+	
+	
+	public static String creatChildrenMenu(com.cn.hnust.pojo.ComplexButton topButton,com.cn.hnust.pojo.Button button) {
+		Menu menu = getChildrenMenu(topButton,button);
+		return JSON.toJSONString(menu);
+	}
+
+
+	private static Menu getChildrenMenu(com.cn.hnust.pojo.ComplexButton topButton,com.cn.hnust.pojo.Button button) {
+		CommonButton childButton = new CommonButton();
+		childButton.setKey(button.getBkey());
+		childButton.setName(button.getName());
+		childButton.setType(button.getType());
+		childButton.setUrl(button.getUrl());
+		childButton.setMedia_id(button.getMediaId());
+		
+		ComplexButton fatherButton = new ComplexButton();
+		fatherButton.setName(topButton.getName());
+		fatherButton.setSub_button(new CommonButton[]{childButton});
+		
+		Menu menuHelpMenu = new Menu();
+		menuHelpMenu.setButton(new Button[] {fatherButton});
+		return menuHelpMenu;
+	}
+
 
 	private static Menu getMenu() {
 		CommonButton btn11 = new CommonButton();

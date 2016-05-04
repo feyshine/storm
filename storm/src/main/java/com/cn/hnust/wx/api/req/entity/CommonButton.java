@@ -1,5 +1,5 @@
-package com.cn.hunst.req;
-
+package com.cn.hnust.wx.api.req.entity;
+//子菜单
 public class CommonButton extends Button{
 	
 	private String key;

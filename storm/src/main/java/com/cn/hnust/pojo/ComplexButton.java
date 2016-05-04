@@ -5,6 +5,10 @@ public class ComplexButton {
 
     private String name;
 
+    private String type;
+
+    private String mkey;
+
     public Long getId() {
         return id;
     }
@@ -19,5 +23,21 @@ public class ComplexButton {
 
     public void setName(String name) {
         this.name = name == null ? null : name.trim();
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type == null ? null : type.trim();
+    }
+
+    public String getMkey() {
+        return mkey;
+    }
+
+    public void setMkey(String mkey) {
+        this.mkey = mkey == null ? null : mkey.trim();
     }
 }

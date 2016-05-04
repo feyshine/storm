@@ -15,6 +15,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link href="<c:url value="/resources/dialog.css"/>" rel="stylesheet">
 	<script src="<c:url value="/resources/jquery.min.js"/>"></script>
 	<script src="<c:url value="/resources/jquery.easyui.min.js"/>"></script>
+	<script src="<c:url value="/resources/easyui-lang-zh_CN.js"/>"></script>
 	
 	<title>微信客服中心</title>
 	<script type="text/javascript">

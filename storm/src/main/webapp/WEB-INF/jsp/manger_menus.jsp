@@ -23,6 +23,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script src="<c:url value="/resources/jquery.min.js"/>"></script>
 <script src="<c:url value="/resources/jquery.easyui.min.js"/>"></script>
 <script src="<c:url value="/resources/datagrid-detailview.js"/>"></script>
+<script src="<c:url value="/resources/easyui-lang-zh_CN.js"/>"></script>
 
 <script type="text/javascript">
  
@@ -50,21 +51,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	            {field:'ck',checkbox:true} 
 	        ]], 
 	 
-	    }); 
-	
-		//设置分页控件 
-	    var p = $('#list_data').datagrid('getPager'); 
-	    $(p).pagination({ 
-	        pageSize: 10,//每页显示的记录条数，默认为10 
-	        pageList: [5,10],//可以设置每页记录条数的列表 
-	        beforePageText: '第',//页数文本框前显示的汉字 
-	        afterPageText: '页    共 {pages} 页', 
-	        displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录', 
-	        /*onBeforeRefresh:function(){
-	            $(this).pagination('loading');
-	            alert('before refresh');
-	            $(this).pagination('loaded');
-	        }*/ 
 	    }); 
 	});
 
@@ -131,12 +117,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </head>
 
 <body>
-	<table id="list_data" class="easyui-datagrid" cellspacing="5" toolbar="#toolbar"
+	<table id="list_data"  cellspacing="5" toolbar="#toolbar"
 		cellpadding="5" border="fasle" >
 		<thead>
 			<tr>
-				<th field="id" width="400">编码</th>
-				<th field="name" width="500">菜单名称</th>
+				<th field="id" width="200">编码</th>
+				<th field="name" width="300">菜单名称</th>
+				<th field="type" width="300">类型</th>
+				<th field="mkey" width="300">关键字</th>
 			</tr>
 		</thead>
 
@@ -153,7 +141,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
        			<div class="fitem"> 
            			<label>编号 </label><input name="id" class="easyui-validatebox" required="true" /> </div> 
        			<div class="fitem">
-       				<label>菜单名称</label><input name="name" class="easyui-validatebox" required="true" /> </div> 
+       				<label>菜单名称</label><input name="name" class="easyui-validatebox" required="true" /> </div>
+       			<div class="fitem">
+       				<label>类型</label><input name="type" class="easyui-validatebox" required="true" /> </div> 
+       			<div class="fitem">
+       				<label>关键字</label><input name="mkey" class="easyui-validatebox" required="true" /> </div>  
        			<div class="fitem"><input type="hidden" name="action" id="hidtype" /></div> 
        			<div class="fitem"><input type="hidden" name="ID" id="Nameid" /></div> 
        		</form>

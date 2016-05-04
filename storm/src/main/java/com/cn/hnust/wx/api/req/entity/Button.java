@@ -1,5 +1,5 @@
-package com.cn.hunst.req;
-
+package com.cn.hnust.wx.api.req.entity;
+//一级菜单
 public class Button {
 	
 	 private String name;
