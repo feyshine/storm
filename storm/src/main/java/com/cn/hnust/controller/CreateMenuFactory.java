@@ -1,5 +1,7 @@
 package com.cn.hnust.controller;
 
+import java.util.List;
+
 import com.alibaba.fastjson.JSON;
 import com.cn.hnust.wx.api.req.entity.Button;
 import com.cn.hnust.wx.api.req.entity.CommonButton;
@@ -15,38 +17,43 @@ public class CreateMenuFactory {
 	}
 	
 	
-	public static String creatTopMenu(com.cn.hnust.pojo.ComplexButton button){
-		Menu menu = getTopMenu(button);
+	public static String creatTopMenu(List<com.cn.hnust.pojo.Button> buttons){
+		Menu menu = getTopMenu(buttons);
 		return JSON.toJSONString(menu);
 	}
 
-	private static Menu getTopMenu(com.cn.hnust.pojo.ComplexButton button) {
-		ComplexButton topButton = new ComplexButton();
-		topButton.setType(button.getType());
-		topButton.setName(button.getName());
-		topButton.setKey(button.getMkey());
+	private static Menu getTopMenu(List<com.cn.hnust.pojo.Button> buttons) {
+		Button[] buttonCache = new Button[buttons.size()];
+		for (int i=0;i<buttons.size();i++) {
+			com.cn.hnust.pojo.Button button = buttons.get(i);
+			ComplexButton topButton = new ComplexButton();
+			topButton.setType(button.getType());
+			topButton.setName(button.getName());
+			topButton.setKey(button.getNkey());
+			buttonCache[i] = topButton;
+		}
 		Menu menuHelp = new Menu();
-		menuHelp.setButton(new Button[] {topButton});
+		menuHelp.setButton(buttonCache);
 		return menuHelp;
 	}
 	
 	
-	public static String creatChildrenMenu(com.cn.hnust.pojo.ComplexButton topButton,com.cn.hnust.pojo.Button button) {
-		Menu menu = getChildrenMenu(topButton,button);
+	public static String creatChildrenMenu(com.cn.hnust.pojo.Button parent,com.cn.hnust.pojo.Button child) {
+		Menu menu = getChildrenMenu(parent,child);
 		return JSON.toJSONString(menu);
 	}
 
 
-	private static Menu getChildrenMenu(com.cn.hnust.pojo.ComplexButton topButton,com.cn.hnust.pojo.Button button) {
+	private static Menu getChildrenMenu(com.cn.hnust.pojo.Button parent,com.cn.hnust.pojo.Button child) {
 		CommonButton childButton = new CommonButton();
-		childButton.setKey(button.getBkey());
-		childButton.setName(button.getName());
-		childButton.setType(button.getType());
-		childButton.setUrl(button.getUrl());
-		childButton.setMedia_id(button.getMediaId());
+		childButton.setKey(child.getNkey());
+		childButton.setName(child.getName());
+		childButton.setType(child.getType());
+		childButton.setUrl(child.getUrl());
+		childButton.setMedia_id(child.getMediaId());
 		
 		ComplexButton fatherButton = new ComplexButton();
-		fatherButton.setName(topButton.getName());
+		fatherButton.setName(parent.getName());
 		fatherButton.setSub_button(new CommonButton[]{childButton});
 		
 		Menu menuHelpMenu = new Menu();

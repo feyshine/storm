@@ -4,14 +4,14 @@
   <resultMap id="BaseResultMap" type="com.cn.hnust.pojo.Button" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="bkey" property="bkey" jdbcType="VARCHAR" />
+    <result column="nkey" property="nkey" jdbcType="VARCHAR" />
     <result column="type" property="type" jdbcType="VARCHAR" />
     <result column="url" property="url" jdbcType="VARCHAR" />
     <result column="media_id" property="mediaId" jdbcType="VARCHAR" />
-    <result column="parentid" property="parentid" jdbcType="VARCHAR" />
+    <result column="parentid" property="parentid" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, bkey, type, url, media_id, parentid
+    id, name, nkey, type, url, media_id, parentid
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -19,29 +19,37 @@
     from button
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectByParent" resultMap="BaseResultMap">
+  <select id="selectAll" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
     from button
-    where parentid = #{parentid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByParent" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    select 
+    <include refid="Base_Column_List" />
+    from button
+    where parentid = #{parentid,jdbcType=BIGINT}
   </select>
   <select id="selectByParams" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from button
-    where id = #{id,jdbcType=BIGINT} and parentid = #{parentid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT} and parentid = #{parentid,jdbcType=BIGINT}
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" >
+    select * from button limit #{startRow},#{pageSize}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from button
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.cn.hnust.pojo.Button" >
-    insert into button (id, name, bkey, 
+    insert into button (id, name, nkey, 
       type, url, media_id, 
       parentid)
-    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{bkey,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{nkey,jdbcType=VARCHAR}, 
       #{type,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{mediaId,jdbcType=VARCHAR}, 
-      #{parentid,jdbcType=VARCHAR})
+      #{parentid,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.cn.hnust.pojo.Button" >
     insert into button
@@ -52,8 +60,8 @@
       <if test="name != null" >
         name,
       </if>
-      <if test="bkey != null" >
-        bkey,
+      <if test="nkey != null" >
+        nkey,
       </if>
       <if test="type != null" >
         type,
@@ -75,8 +83,8 @@
       <if test="name != null" >
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="bkey != null" >
-        #{bkey,jdbcType=VARCHAR},
+      <if test="nkey != null" >
+        #{nkey,jdbcType=VARCHAR},
       </if>
       <if test="type != null" >
         #{type,jdbcType=VARCHAR},
@@ -88,7 +96,7 @@
         #{mediaId,jdbcType=VARCHAR},
       </if>
       <if test="parentid != null" >
-        #{parentid,jdbcType=VARCHAR},
+        #{parentid,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -98,8 +106,8 @@
       <if test="name != null" >
         name = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="bkey != null" >
-        bkey = #{bkey,jdbcType=VARCHAR},
+      <if test="nkey != null" >
+        nkey = #{nkey,jdbcType=VARCHAR},
       </if>
       <if test="type != null" >
         type = #{type,jdbcType=VARCHAR},
@@ -111,7 +119,7 @@
         media_id = #{mediaId,jdbcType=VARCHAR},
       </if>
       <if test="parentid != null" >
-        parentid = #{parentid,jdbcType=VARCHAR},
+        parentid = #{parentid,jdbcType=BIGINT},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -119,11 +127,11 @@
   <update id="updateByPrimaryKey" parameterType="com.cn.hnust.pojo.Button" >
     update button
     set name = #{name,jdbcType=VARCHAR},
-      bkey = #{bkey,jdbcType=VARCHAR},
+      nkey = #{nkey,jdbcType=VARCHAR},
       type = #{type,jdbcType=VARCHAR},
       url = #{url,jdbcType=VARCHAR},
       media_id = #{mediaId,jdbcType=VARCHAR},
-      parentid = #{parentid,jdbcType=VARCHAR}
+      parentid = #{parentid,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

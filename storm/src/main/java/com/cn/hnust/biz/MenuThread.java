@@ -1,6 +1,7 @@
-package com.cn.hnust.controller;
+package com.cn.hnust.biz;
 
 import com.alibaba.fastjson.JSON;
+import com.cn.hnust.controller.CreateMenuFactory;
 import com.cn.hnust.resp.ResponseResult;
 import com.cn.hnust.util.Config;
 import com.cn.hnust.util.L;

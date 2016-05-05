@@ -15,9 +15,13 @@ public interface ButtonMapper<T> {
 
     T selectByPrimaryKey(Long id);
     
-    T selectByParams(@Param("id") Long id,@Param("parentid") String parentid);
+    List<T> selectAll();
     
-    List<T> selectByParent(String parentid);
+    T selectByParams(@Param("id") Long id,@Param("parentid") Long parentid);
+    
+    List<T> selectByPage(@Param(value = "startRow") int startRow,@Param(value = "pageSize") int pageSize);
+    
+    List<T> selectByParent(Long parentid);
     
     int updateByPrimaryKeySelective(T record);
 

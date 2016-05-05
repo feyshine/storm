@@ -6,7 +6,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.cn.hnust.controller.TokenThread.AccessTokenCallBack;
+
+import com.cn.hnust.biz.TokenThread;
+import com.cn.hnust.biz.TokenThread.AccessTokenCallBack;
 import com.cn.hnust.resp.AccessToken;
 import com.cn.hnust.util.FileUtls;
 import com.cn.hnust.util.L;

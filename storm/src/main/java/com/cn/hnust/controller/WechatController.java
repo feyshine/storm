@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.cn.hnust.biz.MessageHandler;
+import com.cn.hnust.biz.ProcessReqest;
 import com.cn.hnust.pojo.WxMessage;
 import com.cn.hnust.service.IWechatService;
 import com.cn.hnust.service.IWxService;

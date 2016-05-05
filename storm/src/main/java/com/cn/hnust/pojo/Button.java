@@ -5,7 +5,7 @@ public class Button {
 
     private String name;
 
-    private String bkey;
+    private String nkey;
 
     private String type;
 
@@ -13,7 +13,9 @@ public class Button {
 
     private String mediaId;
 
-    private String parentid;
+    private Long parentid;
+	
+	private Button [] sub_button;
 
     public Long getId() {
         return id;
@@ -31,12 +33,12 @@ public class Button {
         this.name = name == null ? null : name.trim();
     }
 
-    public String getBkey() {
-        return bkey;
+    public String getNkey() {
+        return nkey;
     }
 
-    public void setBkey(String bkey) {
-        this.bkey = bkey == null ? null : bkey.trim();
+    public void setNkey(String nkey) {
+        this.nkey = nkey == null ? null : nkey.trim();
     }
 
     public String getType() {
@@ -63,11 +65,21 @@ public class Button {
         this.mediaId = mediaId == null ? null : mediaId.trim();
     }
 
-    public String getParentid() {
+    public Long getParentid() {
         return parentid;
     }
 
-    public void setParentid(String parentid) {
-        this.parentid = parentid == null ? null : parentid.trim();
+    public void setParentid(Long parentid) {
+        this.parentid = parentid;
     }
+
+	public Button[] getSub_button() {
+		return sub_button;
+	}
+
+	public void setSub_button(Button[] sub_button) {
+		this.sub_button = sub_button;
+	}
+    
+    
 }

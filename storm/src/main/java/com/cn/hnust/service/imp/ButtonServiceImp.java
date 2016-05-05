@@ -39,14 +39,26 @@ public class ButtonServiceImp implements IButtonService<Button> {
 	}
 
 	@Override
-	public List<Button> queryByParent(String parentid) {
+	public List<Button> queryByParent(Long parentid) {
 		return this.buttonDao.selectByParent(parentid);
 	}
 
 	@Override
-	public Button queryByParams(Long id, String parentid) {
+	public Button queryByParams(Long id, Long parentid) {
 		// TODO Auto-generated method stub
 		return this.buttonDao.selectByParams(id, parentid);
+	}
+
+	@Override
+	public List<Button> queryByPage(int row, int page) {
+		// TODO Auto-generated method stub
+		return this.buttonDao.selectByPage(row, page);
+	}
+
+	@Override
+	public List<Button> queryAll() {
+		// TODO Auto-generated method stub
+		return this.buttonDao.selectAll();
 	}
 
 

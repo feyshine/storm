@@ -1,4 +1,4 @@
-package com.cn.hnust.controller;
+package com.cn.hnust.biz;
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;

@@ -8,8 +8,10 @@ public interface IButtonService<T> {
 	public int update(T t);
 	public T query(Long id);
 	public int delete(Long id);
-	public T queryByParams(Long id,String parentid);
-	public List<T> queryByParent(String parentid);
+	public T queryByParams(Long id,Long parentid);
+	public List<T> queryByParent(Long parentid);
+	public List<T> queryByPage(int row,int page);
+	public List<T> queryAll();
 
 
 }
