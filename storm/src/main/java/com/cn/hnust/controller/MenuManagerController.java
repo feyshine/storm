@@ -29,10 +29,8 @@ import com.cn.hnust.wx.api.resp.entity.ParseMenu;
 
 @Controller
 @RequestMapping("/menu")
-public class MenuManagerController {
-	
-	private static Logger logger = LogManager.getLogger(MenuManagerController.class.getName());
-	
+public class MenuManagerController extends BaseController{
+
 
 	@Resource
 	private IButtonService<Button> buttonService;
@@ -45,7 +43,7 @@ public class MenuManagerController {
 	}
 	@ResponseBody//加了这行返回json数据
 	@RequestMapping(value = "/queryByPageSize", method = { RequestMethod.POST })
-	public Map<String, Object> queryWxMenuByPageSize(@RequestParam(value = "page", required = false) String page,@RequestParam(value = "rows", required = false) String rows){
+	public Map<String, Object> queryWxMenuByPageSize(@RequestParam(value = "page", required = false) String page,@RequestParam(value = ROWS, required = false) String rows){
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<com.cn.hnust.wx.api.req.entity.ComplexButton> list = getServerButtons();
 		clearUpMenus();
@@ -58,9 +56,9 @@ public class MenuManagerController {
         int start = (intPage-1)*number; 
 		List<ComplexButton> totalMenuList = complexButtonService.queryAll();
 		int total = totalMenuList.size();
-		map.put("total", total);
+		map.put(TOTAL, total);
 		List<ComplexButton> menuList = complexButtonService.queryByPage(start, number);
-		map.put("rows", menuList);
+		map.put(ROWS, menuList);
 		return map;
 	}
 
@@ -138,21 +136,21 @@ public class MenuManagerController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		ComplexButton tempMenu = complexButtonService.query(id);
 		if(tempMenu == null){
-			map.put("result", 0);
-			map.put("msg", "父菜单不存在！");
-			map.put("row", null);
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "父菜单不存在！");
+			map.put(ROWS, null);
 			logger.info(id + "父菜单不存在！");
 		}else{
 			List<Button> children = this.buttonService.queryByParent(id+"");
 			if(children.size()>0){
-				map.put("result", 1);
-				map.put("msg", "子菜单数据加载成功！");
-				map.put("rows", children);
+				map.put(RESULT, RESULT_OK);
+				map.put(MSG, "子菜单数据加载成功！");
+				map.put(ROWS, children);
 				logger.info("主菜单"+id + "子菜单数据加载成功！");
 			}else{
-				map.put("result", 0);
-				map.put("msg", "暂无子菜单数据！");
-				map.put("row", null);
+				map.put(RESULT, RESULT_ERROR);
+				map.put(MSG, "暂无子菜单数据！");
+				map.put(ROWS, null);
 				logger.info("主菜单编码："+id + "，暂无子菜单数据！");
 			}
 		}
@@ -165,26 +163,26 @@ public class MenuManagerController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int result = syncWxCreatTopMenu(button);
 		switch (result) {
-		case 1:
+		case WX_RESPONSE_SUCCESS:
 			ComplexButton tempMenu = complexButtonService.query(button.getId());
 			if(tempMenu == null){
 				complexButtonService.save(button);
-				map.put("result", 1);
-				map.put("msg", "菜单添加成功！");
+				map.put(RESULT, RESULT_OK);
+				map.put(MSG, "菜单添加成功！");
 				logger.info(button.getName() + " 保存数据库中");
 			}else{
-				map.put("result", 0);
-				map.put("msg", "菜单已存在！");
+				map.put(RESULT, RESULT_ERROR);
+				map.put(MSG, "菜单已存在！");
 				logger.info(button.getName() + " 已存在数据库中");
 			}
 			break;
-		case 2:
-			map.put("result", 0);
-			map.put("msg", "微信菜单创建失败");
+		case WX_RESPONSE_FAIL:
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "微信菜单创建失败");
 			break;
-		case 3:
-			map.put("result", 0);
-			map.put("msg", "微信服务器返回空，菜单创建失败");
+		case WX_RESPONSE_NULL:
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "微信服务器返回空，菜单创建失败");
 			break;
 		default:
 			break;
@@ -204,12 +202,12 @@ public class MenuManagerController {
 		String result = menuHelper.postHttpsResponse(url, jsonMenu);
 		ResponseResult menuresult = JSON.parseObject(result, ResponseResult.class);
 		if(menuresult == null){
-			return 3;
+			return WX_RESPONSE_NULL;
 		}
 		if(menuresult.getErrcode()!= null && menuresult.getErrcode().equals("0")){
-			return 1;
+			return WX_RESPONSE_SUCCESS;
 		}else {
-			return 2;
+			return WX_RESPONSE_FAIL;
 		}
 	}
 	
@@ -219,39 +217,39 @@ public class MenuManagerController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		ComplexButton tempMenu = complexButtonService.query(Long.valueOf(child.getParentid()));
 		if(tempMenu==null){
-			map.put("result", 0);
-			map.put("msg", "父菜单菜单不存在！");
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "父菜单菜单不存在！");
 			logger.info(child.getName() + "的父菜单不存在！");
 		}else{
 			int result = syncComplexButton(child, tempMenu);
 			switch (result) {
-			case 1:
+			case WX_RESPONSE_SUCCESS:
 				Button temChild = this.buttonService.queryByParams(child.getId(), child.getParentid());
 				Button IdDuplicate = this.buttonService.query(child.getId());//数据库id主键不能重复，且自增
 				if(temChild == null){
 					if(IdDuplicate!=null){
-						map.put("result", 0);
-						map.put("msg", "子菜单ID不能重复，重新填写！");
+						map.put(RESULT, RESULT_ERROR);
+						map.put(MSG, "子菜单ID不能重复，重新填写！");
 						logger.info(child.getName() + "子菜单ID不能重复，重新填写！");
 					}else{
 						this.buttonService.save(child);
-						map.put("result", 1);
-						map.put("msg", "子菜单菜单添加成功！");
+						map.put(RESULT, RESULT_OK);
+						map.put(MSG, "子菜单菜单添加成功！");
 						logger.info(child.getName() + "子菜单菜单添加成功！");
 					}
 				}else{
-					map.put("result", 0);
-					map.put("msg", "子菜单菜单已存在！");
+					map.put(RESULT, RESULT_ERROR);
+					map.put(MSG, "子菜单菜单已存在！");
 					logger.info(child.getName() + "子菜单菜单已存在！");
 				}
 				break;
-			case 2:
-				map.put("result", 0);
-				map.put("msg", "微信菜单创建失败");
+			case WX_RESPONSE_FAIL:
+				map.put(RESULT, RESULT_ERROR);
+				map.put(MSG, "微信菜单创建失败");
 				break;
-			case 3:
-				map.put("result", 0);
-				map.put("msg", "微信服务器返回空，菜单创建失败");
+			case WX_RESPONSE_NULL:
+				map.put(RESULT, RESULT_ERROR);
+				map.put(MSG, "微信服务器返回空，菜单创建失败");
 				break;
 			default:
 				break;
@@ -273,12 +271,12 @@ public class MenuManagerController {
 		String result = menuHelper.postHttpsResponse(url, jsonMenu);
 		ResponseResult menuresult = JSON.parseObject(result, ResponseResult.class);
 		if(menuresult == null){
-			return 3;
+			return WX_RESPONSE_NULL;
 		}
 		if(menuresult.getErrcode()!= null && menuresult.getErrcode().equals("0")){
-			return 1;
+			return WX_RESPONSE_SUCCESS;
 		}else {
-			return 2;
+			return WX_RESPONSE_FAIL;
 		}
 	}
 	
@@ -288,13 +286,13 @@ public class MenuManagerController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		ComplexButton tempMenu = complexButtonService.query(button.getId());
 		if(tempMenu==null){
-			map.put("result", 0);
-			map.put("msg", "菜单不存在！");
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "菜单不存在！");
 			logger.info(button.getName() + " has updated  faltrue");
 		}else{
 			complexButtonService.update(button);
-			map.put("result", 1);
-			map.put("msg", "菜单编辑成功！");
+			map.put(RESULT, RESULT_OK);
+			map.put(MSG, "菜单编辑成功！");
 			logger.info(button.getName() + " has updated  successfully");
 		}
 		
@@ -307,19 +305,19 @@ public class MenuManagerController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		ComplexButton tempMenu = complexButtonService.query(Long.valueOf(button.getParentid()));
 		if(tempMenu==null){
-			map.put("result", 0);
-			map.put("msg", "菜单不存在！");
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "菜单不存在！");
 			logger.info(button.getName() + "菜单不存在！");
 		}else{
 			Button children = this.buttonService.queryByParams(button.getId(),button.getParentid());
 			if(children == null){
-				map.put("result", 0);
-				map.put("msg", "子菜单不存在！");
+				map.put(RESULT, RESULT_ERROR);
+				map.put(MSG, "子菜单不存在！");
 				logger.info(button.getName() + "子菜单不存在！");
 			}else{
 				this.buttonService.update(button);
-				map.put("result", 1);
-				map.put("msg", "子菜单编辑成功！");
+				map.put(RESULT, RESULT_OK);
+				map.put(MSG, "子菜单编辑成功！");
 				logger.info(button.getName() + "子菜单编辑成功！");
 			}
 		}
@@ -332,11 +330,11 @@ public class MenuManagerController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int result = syncDeleteButtons();
 		switch (result) {
-		case 1:
+		case WX_RESPONSE_SUCCESS:
 			ComplexButton tempMenu = complexButtonService.query(id);
 			if(tempMenu==null){
-				map.put("result", 0);
-				map.put("msg", "菜单不存在！");
+				map.put(RESULT, RESULT_ERROR);
+				map.put(MSG, "菜单不存在！");
 				logger.info(id + " has not in database");
 			}else{
 				List<Button> chlidren = buttonService.queryByParent(id+"");
@@ -346,18 +344,18 @@ public class MenuManagerController {
 					}
 				}
 				complexButtonService.delte(id);
-				map.put("result", 1);
-				map.put("msg", "菜单删除成功！");
+				map.put(RESULT, RESULT_OK);
+				map.put(MSG, "菜单删除成功！");
 				logger.info(id + " has deleted  database");
 			}
 			break;
-		case 2:
-			map.put("result", 0);
-			map.put("msg", "菜单删除失败！");
+		case WX_RESPONSE_FAIL:
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "菜单删除失败！");
 			break;
-		case 3:
-			map.put("result", 0);
-			map.put("msg", "微信服务器返回空，菜单删除失败！");
+		case WX_RESPONSE_NULL:
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "微信服务器返回空，菜单删除失败！");
 			break;
 			
 		default:
@@ -375,12 +373,12 @@ public class MenuManagerController {
 		String result = menuHelper.getHttpsResponse(url, "GET");
 		ResponseResult menuresult = JSON.parseObject(result, ResponseResult.class);
 		if(menuresult == null){
-			return 3;
+			return WX_RESPONSE_NULL;
 		}
 		if(menuresult.getErrcode()!= null && menuresult.getErrcode().equals("0")){
-			return 1;
+			return WX_RESPONSE_SUCCESS;
 		}else {
-			return 2;
+			return WX_RESPONSE_FAIL;
 		}
 	}
 	
@@ -390,19 +388,19 @@ public class MenuManagerController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		ComplexButton tempMenu = complexButtonService.query(Long.valueOf(parentId));
 		if(tempMenu==null){
-			map.put("result", 0);
-			map.put("msg", "菜单不存在！");
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "菜单不存在！");
 			logger.info(parentId + " has not in database");
 		}else{
 			Button tempChild = this.buttonService.queryByParams(id, parentId);
 			if(tempChild == null){
-				map.put("result", 0);
-				map.put("msg", "子菜单不存在！");
+				map.put(RESULT, RESULT_ERROR);
+				map.put(MSG, "子菜单不存在！");
 				logger.info(id + "子菜单不存在！");
 			}else{
 				this.buttonService.delete(id);
-				map.put("result", 1);
-				map.put("msg", "子菜单删除成功！");
+				map.put(RESULT, RESULT_OK);
+				map.put(MSG, "子菜单删除成功！");
 				logger.info(id + "子菜单删除成功！");
 			}
 		}

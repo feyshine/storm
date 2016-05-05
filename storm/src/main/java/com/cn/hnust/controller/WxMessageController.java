@@ -29,12 +29,12 @@ public class WxMessageController extends BaseController{
 		WxMessage tempMessage = messageService.queryById(message.getMsgid());
 		if(tempMessage==null){
 			messageService.save(message);
-			map.put("result", 1);
-			map.put("msg", "保存成功");
+			map.put(RESULT, RESULT_OK);
+			map.put(MSG, "保存成功");
 			logger.info("消息保存成功");
 		}else{
-			map.put("result", 0);
-			map.put("msg", "消息已经存在！");
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "消息已经存在！");
 			logger.info("消息保存失败");
 		}
 
@@ -47,13 +47,13 @@ public class WxMessageController extends BaseController{
 		Map<String,Object> map = new HashMap<String,Object>();
 		WxMessage tempMessage = messageService.queryById(message.getMsgid());
 		if(tempMessage==null){
-			map.put("result", 0);
-			map.put("msg", "消息不存在！");
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "消息不存在！");
 			logger.info("消息更新失败");
 		}else{
 			messageService.update(message);
-			map.put("result", 1);
-			map.put("msg", "更新成功");
+			map.put(RESULT, RESULT_OK);
+			map.put(MSG, "更新成功");
 			logger.info("消息更新成功");
 		}
 		return map;
@@ -66,13 +66,13 @@ public class WxMessageController extends BaseController{
 		logger.info("msgid = " +MsgId);
 		WxMessage wm = this.messageService.queryById(MsgId);
 		if(wm==null){
-			map.put("result", 0);
-			map.put("msg", "删除失败，消息不存在");
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "删除失败，消息不存在");
 			logger.info("消息删除失败，消息不存在");	
 		}else{
 			messageService.delete(wm.getId());
-			map.put("result", 1);
-			map.put("msg", "删除成功");
+			map.put(RESULT, RESULT_OK);
+			map.put(MSG, "删除成功");
 			logger.info("消息删除成功");	
 		}
 		return map;

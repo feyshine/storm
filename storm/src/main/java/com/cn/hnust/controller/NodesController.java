@@ -1,6 +1,4 @@
 package com.cn.hnust.controller;
-
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +19,8 @@ import com.cn.hnust.service.INodeService;
 @RequestMapping("/node")
 public class NodesController extends BaseController{
 	
+	private static final String TOP_TREE = "";
+	private static final String TREE_DATA = "data";
 	@Resource
 	private INodeService<Node> nodeService;
 	
@@ -28,16 +28,16 @@ public class NodesController extends BaseController{
 	@RequestMapping(value="/accordion",method={RequestMethod.POST})
 	public Map<String,Object> queryTopNodes(){
 		Map<String,Object> map = new HashMap<String,Object>();
-		List<Node> topNodesSet = this.nodeService.queryChildNodes("");
+		List<Node> topNodesSet = this.nodeService.queryChildNodes(TOP_TREE);
 		logger.info("菜单请求收到....");
 		if(topNodesSet.size()>0){
-			map.put("result", 1);
-			map.put("msg", "菜单节点获取成功");
-			map.put("data", topNodesSet);
+			map.put(RESULT, RESULT_OK);
+			map.put(MSG, "菜单节点获取成功");
+			map.put(TREE_DATA, topNodesSet);
 		}else{
-			map.put("result", 0);
-			map.put("msg", "暂无菜单节点数据");
-			map.put("data", topNodesSet);
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "暂无菜单节点数据");
+			map.put(TREE_DATA, topNodesSet);
 		}
 		return map;
 	}
@@ -59,13 +59,13 @@ public class NodesController extends BaseController{
 				tree.attributes = node.getUrl();
 				trees.add(tree);
 			}
-			map.put("result", 1);
-			map.put("msg", "菜单节点获取成功");
-			map.put("data", trees);
+			map.put(RESULT, RESULT_OK);
+			map.put(MSG, "菜单节点获取成功");
+			map.put(TREE_DATA, trees);
 		}else{
-			map.put("result", 0);
-			map.put("msg", "暂无菜单节点数据");
-			map.put("data", childNodesSet);
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "暂无菜单节点数据");
+			map.put(TREE_DATA, childNodesSet);
 		}
 		return map;
 	}

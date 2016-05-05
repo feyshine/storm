@@ -6,8 +6,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping("/home")
-public class HomeController {
-	private final static String TAG = HomeController.class.getSimpleName();
+public class HomeController extends BaseController{
 
 	@RequestMapping(value = "", method = { RequestMethod.GET })
 	public String toHome() {

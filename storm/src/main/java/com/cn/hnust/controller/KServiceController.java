@@ -29,7 +29,6 @@ import com.cn.hnust.util.L;
 @Controller
 @RequestMapping("kservice")
 public class KServiceController extends BaseController{
-	private final static String TAG = KServiceController.class.getSimpleName();
 	
 	@Resource
 	private IKService<KService> kService;
@@ -50,25 +49,25 @@ public class KServiceController extends BaseController{
 //		if(addresult == null){
 //			L.i(TAG, "服务器返回 null");
 //		}else{
-//			if(addresult.getErrcode()!= null && addresult.getErrcode().equals("0")){
+//			if(addresult.getErrcode()!= null && addresult.getErrcode().equals("RESULT_ERROR")){
 //				L.i(TAG, "添加客服成功！");
 //				kService.save(kservice);
-//				map.put("result", 1);
-//				map.put("msg", "添加成功");
+//				map.put(RESULT, RESULT_OK);
+//				map.put(MSG, "添加成功");
 //			}else{
-//				map.put("result", 0);
-//				map.put("msg", "添加失败");
+//				map.put(RESULT, RESULT_ERROR);
+//				map.put(MSG, "添加失败");
 //				L.i(TAG, "添加客服失败！err = " + addresult.getErrmsg());
 //			}
 //		}
 		if(saveFiles(file,getFilePath(request))){
 			kservice.setKfheadimgurl(getFilePath(request));
 			this.kService.save(kservice);
-			map.put("result", 1);
-			map.put("msg", "添加成功");
+			map.put(RESULT, RESULT_OK);
+			map.put(MSG, "添加成功");
 		}else{
-			map.put("result", 0);
-			map.put("msg", "头像上传失败！");
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "头像上传失败！");
 		};
 		
 		return map;
@@ -126,12 +125,12 @@ public class KServiceController extends BaseController{
 		Map<String,Object> map = new HashMap<String,Object>();
 		KService temService = this.kService.select(service.getKfaccount());
 		if(temService==null){
-			map.put("result", 0);
-			map.put("msg", "客服账号不存在");
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "客服账号不存在");
 		}else{
 			this.kService.delete(service.getKfaccount());
-			map.put("result", 1);
-			map.put("msg", "删除成功");
+			map.put(RESULT, RESULT_OK);
+			map.put(MSG, "删除成功");
 		}
 		return map;
 	}
@@ -142,17 +141,17 @@ public class KServiceController extends BaseController{
 		Map<String,Object> map = new HashMap<String,Object>();
 		KService temService = this.kService.select(service.getKfaccount());
 		if(temService==null){
-			map.put("result", 0);
-			map.put("msg", "客服账号不存在");
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "客服账号不存在");
 		}else{
 			if (saveFiles(file,getFilePath(request))) {
 				service.setKfheadimgurl(getFilePath(request));
 				this.kService.updateByPrimaryKey(service);
-				map.put("result", 1);
-				map.put("msg", "编辑成功");
+				map.put(RESULT, RESULT_OK);
+				map.put(MSG, "编辑成功");
 			}else{
-				map.put("result", 0);
-				map.put("msg", "编辑失败,重新编辑！");
+				map.put(RESULT, RESULT_ERROR);
+				map.put(MSG, "编辑失败,重新编辑！");
 			}
 			
 		}
@@ -164,8 +163,8 @@ public class KServiceController extends BaseController{
 	public Map<String,Object> queryKService(){
 		Map<String,Object> map = new HashMap<String,Object>();
 		List<KService> queryResultSet = this.kService.queryAll();
-		map.put("total", queryResultSet.size());
-		map.put("rows", queryResultSet);
+		map.put(TOTAL, queryResultSet.size());
+		map.put(ROWS, queryResultSet);
 		logger.info("query all kservice return");
 		return map;
 	}
@@ -182,9 +181,9 @@ public class KServiceController extends BaseController{
 		//每页的开始记录  第一页为1  第二页为number +1   
 		int start = (intPage-1)*number; 
 		List<KService> queryResultSet = this.kService.queryAll();
-		map.put("total", queryResultSet.size());
+		map.put(TOTAL, queryResultSet.size());
 		List<KService> queryResult = this.kService.queryTByPageSize(start, number);
-		map.put("rows", queryResult);
+		map.put(ROWS, queryResult);
 		logger.info("query all kservice return");
 		return map;
 	}
@@ -195,8 +194,8 @@ public class KServiceController extends BaseController{
 		for(MultipartFile file : files){
 			if(file.isEmpty()){  
 				logger.info("文件未上传");
-				map.put("result", 0);
-				map.put("msg", "上传失败");
+				map.put(RESULT, RESULT_ERROR);
+				map.put(MSG, "上传失败");
 			}else{  
 				logger.info("文件长度: " + file.getSize());  
 				logger.info("文件类型: " + file.getContentType());  
@@ -207,8 +206,8 @@ public class KServiceController extends BaseController{
                 try {
                 	//这里不必处理IO流关闭的问题，因为FileUtils.copyInputStreamToFile()方法内部会自动把用到的IO流关掉，我是看它的源码才知道的  
 					FileUtils.copyInputStreamToFile(file.getInputStream(), new File(realPath, file.getOriginalFilename()));
-					map.put("result", 1);
-					map.put("msg", "上传成功");
+					map.put(RESULT, RESULT_OK);
+					map.put(MSG, "上传成功");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}  

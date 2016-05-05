@@ -19,8 +19,15 @@ import com.cn.hnust.util.SignUtil;
 
 @Controller
 @RequestMapping("/wx")
-public class WechatController {
-	private static final String TAG = WechatController.class.getSimpleName();
+public class WechatController extends BaseController{
+	private static final String TIMESTAMP = "timestamp";
+
+	private static final String ECHOSTR = "echostr";
+
+	private static final String NONCE = "nonce";
+
+	private static final String SIGNATURE = "signature";
+
 	
 	@Resource
 	private IWechatService wechatService;
@@ -34,15 +41,16 @@ public class WechatController {
 		String reqMethod = request.getMethod();
 		if (reqMethod.equals("GET")) {
 			// 微信加密签名
-			String signature = request.getParameter("signature");
+			String signature = request.getParameter(SIGNATURE);
 			// 时间戳
-			String timestamp = request.getParameter("timestamp");
+			
+			String timestamp = request.getParameter(TIMESTAMP);
 			// 随机数
-			String nonce = request.getParameter("nonce");
+			String nonce = request.getParameter(NONCE);
 			// 随机字符串
-			String echostr = request.getParameter("echostr");
+			String echostr = request.getParameter(ECHOSTR);
 
-			L.i(TAG, "===============微信公众号对接开始===============！");
+			logger.info("===============微信公众号对接开始===============！");
 			boolean valid = wechatService.checkcalidata(signature, timestamp,
 					nonce);
 			if (valid) {
@@ -53,11 +61,11 @@ public class WechatController {
 					if (SignUtil.checkSignature(signature, timestamp, nonce)) {
 						out.print(echostr);
 						out.flush();
-						L.i(TAG, "微信公众号对接成功！");
+						logger.info("微信公众号对接成功！");
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
-					L.i(TAG, "微信公众号对接出现异常！");
+					logger.info("微信公众号对接出现异常！");
 				} finally {
 					out.close();
 					out = null;
@@ -89,13 +97,13 @@ public class WechatController {
 	@RequestMapping("chat")
 	public void chat(HttpServletRequest request, HttpServletResponse response) {
 		// 微信加密签名
-		String signature = request.getParameter("signature");
+		String signature = request.getParameter(SIGNATURE);
 		// 时间戳
-		String timestamp = request.getParameter("timestamp");
+		String timestamp = request.getParameter(TIMESTAMP);
 		// 随机数
-		String nonce = request.getParameter("nonce");
+		String nonce = request.getParameter(NONCE);
 		
-		L.i(TAG, "===============微信公众号应答开始===============！");
+		logger.info("===============微信公众号应答开始===============！");
 		boolean valid = wechatService.checkcalidata(signature, timestamp,nonce);
 		if (valid) {
 			PrintWriter out = null;
@@ -112,11 +120,11 @@ public class WechatController {
 					}
 					out.print(respMessage);
 					out.flush();
-					L.i(TAG, "微信公众号对接成功！");
+					logger.info("微信公众号对接成功！");
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
-				L.i(TAG, "微信公众号对接出现异常！");
+				logger.info("微信公众号对接出现异常！");
 			} finally {
 				out.close();
 				out = null;
