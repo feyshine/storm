@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
+import com.cn.hnust.biz.WxButtonBiz;
 import com.cn.hnust.pojo.Button;
 import com.cn.hnust.resp.ResponseResult;
 import com.cn.hnust.service.IButtonService;
@@ -222,8 +224,33 @@ public class MenuManagerController extends BaseController{
 	
 	@ResponseBody
 	@RequestMapping(value = "/creatWxButton", method = { RequestMethod.POST })
-	public Map<String, Object> creat(){
+	public Map<String, Object> creat() {
 		Map<String, Object> map = new HashMap<String, Object>();
+		List<Button> parentList = this.buttonService.queryByParent(PARENTID);
+		for (Button parentbutton : parentList) {
+			List<Button> childrenButtons = this.buttonService
+					.queryByParent(parentbutton.getId());
+			Button[] btnButtons = new Button[childrenButtons.size()];
+			for (int i = 0; i < childrenButtons.size(); i++) {
+				btnButtons[i] = childrenButtons.get(i);
+				parentbutton.setSub_button(btnButtons);
+			}
+		}
+		int result = WxButtonBiz.creatWxButtons(parentList);
+		if (result == WX_RESPONSE_SUCCESS) {
+			map.put(RESULT, RESULT_OK);
+			map.put(MSG, "微信菜单创建成功！");
+			logger.info("微信菜单创建成功");
+		} else if (result == WX_RESPONSE_FAIL) {
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "微信菜单创建失败！");
+			logger.info("微信菜单创建失败");
+		} else if (result == WX_RESPONSE_NULL) {
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "微信菜单创建异常！");
+			logger.info("微信菜单创建异常");
+		}
+
 		return map;
 	}
 	
@@ -232,6 +259,20 @@ public class MenuManagerController extends BaseController{
 	@RequestMapping(value = "/deleteWxButton", method = { RequestMethod.POST })
 	public Map<String, Object> delete(){
 		Map<String, Object> map = new HashMap<String, Object>();
+		int result = WxButtonBiz.deleteWxButtons();
+		if (result == WX_RESPONSE_SUCCESS) {
+			map.put(RESULT, RESULT_OK);
+			map.put(MSG, "微信菜单删除成功！");
+			logger.info("微信菜单删除成功");
+		} else if (result == WX_RESPONSE_FAIL) {
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "微信菜单删除失败！");
+			logger.info("微信菜单删除失败");
+		} else if (result == WX_RESPONSE_NULL) {
+			map.put(RESULT, RESULT_ERROR);
+			map.put(MSG, "微信菜单删除异常！");
+			logger.info("微信菜单删除异常");
+		}
 		return map;
 	}
 

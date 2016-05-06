@@ -333,33 +333,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	$.post(
         		"${pageContext.request.contextPath}/menu/creatWxButton",
         		{},
-        		function(result){
-        			var obj = eval( "(" + result + ")" );//转换后的JSON对象
-                    if (obj.result == "1") {
-                        $.messager.alert("提示信息", obj.msg);
-                        $("#menu_list").datagrid("load");
+        		function(data){
+                    if (data.result == "1") {
+                        $.messager.alert("提示信息", data.msg);
+                        //$("#menu_list").datagrid("load");
                     }
                     else {
-                        $.messager.alert("提示信息",obj.msg);
+                        $.messager.alert("提示信息",data.msg);
                     }
         		}
-        	);
+        	,"json");
         }
         function remove(){
         	$.post(
         		"${pageContext.request.contextPath}/menu/deleteWxButton",
         		{},
-        		function(result){
-        			var obj = eval( "(" + result + ")" );//转换后的JSON对象
-                    if (obj.result == "1") {
-                        $.messager.alert("提示信息", obj.msg);
-                        $("#menu_list").datagrid("load");
+        		function(data){
+                    if (data.result == "1") {
+                        $.messager.alert("提示信息", data.msg);
+                        //$("#menu_list").datagrid("load");
                     }
                     else {
-                        $.messager.alert("提示信息",obj.msg);
+                        $.messager.alert("提示信息",data.msg);
                     }
         		}
-        	);
+        	,"json");
         } 
 </script>
 
