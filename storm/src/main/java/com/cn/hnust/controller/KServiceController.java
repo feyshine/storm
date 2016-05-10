@@ -60,8 +60,8 @@ public class KServiceController extends BaseController{
 //				L.i(TAG, "添加客服失败！err = " + addresult.getErrmsg());
 //			}
 //		}
-		if(saveFiles(file,getFilePath(request))){
-			kservice.setKfheadimgurl(getFilePath(request));
+		if(FileUtls.saveFile(file,FileUtls.getFilePath(request))){
+			kservice.setKfheadimgurl(FileUtls.getFilePath(request));
 			this.kService.save(kservice);
 			map.put(RESULT, RESULT_OK);
 			map.put(MSG, "添加成功");
@@ -73,46 +73,8 @@ public class KServiceController extends BaseController{
 		return map;
 	}
 
-	/**
-	 * @param request
-	 * @return
-	 */
-	private String getFilePath(HttpServletRequest request) {
-		String realPath = request.getSession().getServletContext().getRealPath("/WEB-INF/upload");
-		return realPath;
-	}
+	
 
-	/**
-	 * @param file
-	 * @param kservice
-	 * @param request
-	 * @param map
-	 */
-	private boolean saveFiles(MultipartFile file, String path) {
-		boolean flag = false;
-		if (file.isEmpty()) {
-			logger.info("文件未上传");
-			flag = false;
-		} else {
-			logger.info("文件长度: " + file.getSize());
-			logger.info("文件类型: " + file.getContentType());
-			logger.info("文件名称: " + file.getName());
-			logger.info("文件原名: " + file.getOriginalFilename());
-			logger.info("realPath = " + path);
-			logger.info("========================================");
-			try {
-				// 这里不必处理IO流关闭的问题，因为FileUtils.copyInputStreamToFile()方法内部会自动把用到的IO流关掉，我是看它的源码才知道的
-				FileUtils.copyInputStreamToFile(file.getInputStream(),
-						new File(path, file.getOriginalFilename()));
-				flag = true;
-			} catch (IOException e) {
-				e.printStackTrace();
-				logger.info("io异常  =" + e);
-			}
-		}
-
-		return flag;
-	}
 	
 	@RequestMapping(value = "", method = { RequestMethod.GET })
 	public String toKf() {
@@ -144,8 +106,8 @@ public class KServiceController extends BaseController{
 			map.put(RESULT, RESULT_ERROR);
 			map.put(MSG, "客服账号不存在");
 		}else{
-			if (saveFiles(file,getFilePath(request))) {
-				service.setKfheadimgurl(getFilePath(request));
+			if (FileUtls.saveFile(file,FileUtls.getFilePath(request))) {
+				service.setKfheadimgurl(FileUtls.getFilePath(request));
 				this.kService.updateByPrimaryKey(service);
 				map.put(RESULT, RESULT_OK);
 				map.put(MSG, "编辑成功");
@@ -191,29 +153,13 @@ public class KServiceController extends BaseController{
 	@RequestMapping(value="/upload",method={RequestMethod.POST})
 	public Map<String, Object> uploadFile(@RequestParam MultipartFile[] files, HttpServletRequest request){
 		Map<String, Object> map = new HashMap<String, Object>();
-		for(MultipartFile file : files){
-			if(file.isEmpty()){  
-				logger.info("文件未上传");
-				map.put(RESULT, RESULT_ERROR);
-				map.put(MSG, "上传失败");
-			}else{  
-				logger.info("文件长度: " + file.getSize());  
-				logger.info("文件类型: " + file.getContentType());  
-				logger.info("文件名称: " + file.getName());  
-				logger.info("文件原名: " + file.getOriginalFilename());  
-				logger.info("========================================"); 
-				String realPath = getFilePath(request);
-                try {
-                	//这里不必处理IO流关闭的问题，因为FileUtils.copyInputStreamToFile()方法内部会自动把用到的IO流关掉，我是看它的源码才知道的  
-					FileUtils.copyInputStreamToFile(file.getInputStream(), new File(realPath, file.getOriginalFilename()));
-					map.put(RESULT, RESULT_OK);
-					map.put(MSG, "上传成功");
-				} catch (IOException e) {
-					e.printStackTrace();
-				}  
-             }
-		}
+		FileUtls.saveFiles(files, request);
 		return map;
 	}
+
+
+
+
+
 	
 }

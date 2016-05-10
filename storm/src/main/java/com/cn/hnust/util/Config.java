@@ -76,4 +76,19 @@ public final class  Config {
 	//获取用户列表 GET
 	public final static String get_users_url = "https://api.weixin.qq.com/cgi-bin/user/get?access_token=%s&next_openid=%s";
 	
+	//新增永久图文素材POST
+	public final static String add_newsinfo_url ="https://api.weixin.qq.com/cgi-bin/material/add_news?access_token=%s";
+	//新增其他类型永久素材 POST
+	public final static String add_other_material_url ="https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=%s&type=%s";
+	//获取永久素材 POST
+	public final static String get_material_url = "https://api.weixin.qq.com/cgi-bin/material/get_material?access_token=%s";
+	//删除永久素材 post
+	public final static String delete_material_url = "https://api.weixin.qq.com/cgi-bin/material/del_material?access_token=%s";
+	//修改永久图文素材 post
+	public final static String update_material_url = "https://api.weixin.qq.com/cgi-bin/material/update_news?access_token=%s";
+	//获取素材总数 post
+	public final static String get_material_totalNum = "https://api.weixin.qq.com/cgi-bin/material/get_materialcount?access_token=%s";
+	//获取素材列表 post
+	public final static String get_material_list = "https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=%s";
+	
 }
