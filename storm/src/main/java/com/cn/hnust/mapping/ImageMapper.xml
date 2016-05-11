@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.hnust.dao.ImageMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.hnust.pojo.Image" >
+    <id column="img_id" property="imgId" jdbcType="BIGINT" />
+    <result column="img_name" property="imgName" jdbcType="VARCHAR" />
+    <result column="img_size" property="imgSize" jdbcType="VARCHAR" />
+    <result column="img_type" property="imgType" jdbcType="VARCHAR" />
+    <result column="img_path" property="imgPath" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    img_id, img_name, img_size, img_type, img_path
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from image
+    where img_id = #{imgId,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List" />
+  	from image
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List" />
+  	from image limit #{startRow},#{pageSize}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from image
+    where img_id = #{imgId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.cn.hnust.pojo.Image" >
+    insert into image (img_id, img_name, img_size, 
+      img_type, img_path)
+    values (#{imgId,jdbcType=BIGINT}, #{imgName,jdbcType=VARCHAR}, #{imgSize,jdbcType=VARCHAR}, 
+      #{imgType,jdbcType=VARCHAR}, #{imgPath,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cn.hnust.pojo.Image" >
+    insert into image
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="imgId != null" >
+        img_id,
+      </if>
+      <if test="imgName != null" >
+        img_name,
+      </if>
+      <if test="imgSize != null" >
+        img_size,
+      </if>
+      <if test="imgType != null" >
+        img_type,
+      </if>
+      <if test="imgPath != null" >
+        img_path,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="imgId != null" >
+        #{imgId,jdbcType=BIGINT},
+      </if>
+      <if test="imgName != null" >
+        #{imgName,jdbcType=VARCHAR},
+      </if>
+      <if test="imgSize != null" >
+        #{imgSize,jdbcType=VARCHAR},
+      </if>
+      <if test="imgType != null" >
+        #{imgType,jdbcType=VARCHAR},
+      </if>
+      <if test="imgPath != null" >
+        #{imgPath,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cn.hnust.pojo.Image" >
+    update image
+    <set >
+      <if test="imgName != null" >
+        img_name = #{imgName,jdbcType=VARCHAR},
+      </if>
+      <if test="imgSize != null" >
+        img_size = #{imgSize,jdbcType=VARCHAR},
+      </if>
+      <if test="imgType != null" >
+        img_type = #{imgType,jdbcType=VARCHAR},
+      </if>
+      <if test="imgPath != null" >
+        img_path = #{imgPath,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where img_id = #{imgId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cn.hnust.pojo.Image" >
+    update image
+    set img_name = #{imgName,jdbcType=VARCHAR},
+      img_size = #{imgSize,jdbcType=VARCHAR},
+      img_type = #{imgType,jdbcType=VARCHAR},
+      img_path = #{imgPath,jdbcType=VARCHAR}
+    where img_id = #{imgId,jdbcType=BIGINT}
+  </update>
+</mapper>

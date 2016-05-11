@@ -28,19 +28,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		text : '增加',
 		iconCls : 'icon-add',
 		handler : function() {
-			add("articles_dlg","${pageContext.request.contextPath}/material/add");
+			add("articles_list","articles_dlg","${pageContext.request.contextPath}/material/add");
 		}
 	}, {
 		text : '编辑',
 		iconCls : 'icon-edit',
 		handler : function() {
-			edit("articles_list","${pageContext.request.contextPath}/material/edit?MsgId=");
+			edit("articles_list","articles_list","${pageContext.request.contextPath}/material/edit?MsgId=");
 		}
 	}, '-', {
 		text : '删除',
 		iconCls : 'icon-remove',
 		handler : function() {
-			dele("articles_list","${pageContext.request.contextPath}/material/delete");
+			var row = $("#articles_list").datagrid('getSelected');
+			dele("articles_list","${pageContext.request.contextPath}/material/delete","","");
 		}
 	} ];
 	
@@ -48,19 +49,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		text : '增加',
 		iconCls : 'icon-add',
 		handler : function() {
-			add("img_dlg","${pageContext.request.contextPath}/material/loadimg");
+			add("img_list","img_dlg","${pageContext.request.contextPath}/material/loadimg");
 		}
-	}, {
-		text : '编辑',
-		iconCls : 'icon-edit',
-		handler : function() {
-			edit("img_dlg","${pageContext.request.contextPath}/material/editimg?img_id=");
-		}
-	}, '-', {
+	},'-', {
 		text : '删除',
 		iconCls : 'icon-remove',
 		handler : function() {
-			dele("img_dlg","${pageContext.request.contextPath}/material/deleteimg");
+			var row = $("#img_list").datagrid('getSelected');
+			dele("img_list","${pageContext.request.contextPath}/material/deleteimg",row.imgId);
 		}
 	} ];
 	
@@ -68,19 +64,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		text : '增加',
 		iconCls : 'icon-add',
 		handler : function() {
-			add("voice_dlg","${pageContext.request.contextPath}/material/addvoice");
-		}
-	}, {
-		text : '编辑',
-		iconCls : 'icon-edit',
-		handler : function() {
-			edit("voice_dlg","${pageContext.request.contextPath}/material/editvoice?voice_id=");
+			add("voice_list","voice_dlg","${pageContext.request.contextPath}/material/addvoice");
 		}
 	}, '-', {
 		text : '删除',
 		iconCls : 'icon-remove',
 		handler : function() {
-			dele("voice_dlg","${pageContext.request.contextPath}/material/deletevoice");
+			var row = $("#voice_list").datagrid('getSelected');
+			dele("voice_list","${pageContext.request.contextPath}/material/deletevoice",row.imgId);
 		}
 	} ];
 	
@@ -88,42 +79,41 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		text : '增加',
 		iconCls : 'icon-add',
 		handler : function() {
-			add("video_dlg","${pageContext.request.contextPath}/material/addvideo");
+			add("video_list","video_dlg","${pageContext.request.contextPath}/material/addvideo");
 		}
-	}, {
-		text : '编辑',
-		iconCls : 'icon-edit',
-		handler : function() {
-			edit("video_dlg","${pageContext.request.contextPath}/material/editvideo?video_id=");
-		}
-	}, '-', {
+	},'-', {
 		text : '删除',
 		iconCls : 'icon-remove',
 		handler : function() {
-			dele("video_dlg","${pageContext.request.contextPath}/material/deletevideo");
+			var row = $("#video_list").datagrid('getSelected');
+			dele("video_list","${pageContext.request.contextPath}/material/deletevideo",row.imgId);
 		}
 	} ];
 
-	var url;
+	var url;//请求路径
 	var type;
-	var vdlg;
-	function add(dlg,urls) {
-		$("#" + dlg).dialog("open").dialog('setTitle', '增加');
+	var vdlg;//dialog
+	var table;//table
+	function add(tab,dlg,urls) {
+		table = tab;
 		vdlg = dlg;
+		$("#" + dlg).dialog("open").dialog('setTitle', '增加');
+		
 		$("#fm").form("clear");
 		url = urls;
 		document.getElementById("hidtype").value = "submit";
 	}
-	function edit(dlg,urls) {
+	function edit(tab,dlg,urls) {
+		table = tab;
 		vdlg = dlg;
 		var row = $("#" + dlg).datagrid("getSelected");
 		if (row) {
 			$("#" + dlg).dialog("open").dialog('setTitle', '编辑');
 			$("#fm").form("load", row);
-			url = urls + row.msgid;
+			url = urls + row.id;
 		}
 	}
-	function save(table) {
+	function save() {
 		$("#fm").form("submit", {
 			url : url,
 			onsubmit : function() {
@@ -141,18 +131,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}
 		});
 	}
-	function dele(table,urls) {
-		var row = $("#" + table).datagrid('getSelected');
+	function dele(tab,urls,rowId) {
+		var row = $("#" + tab).datagrid('getSelected');
 		if (row) {
 			$.messager.confirm('确认', '你确定要删除?', function(r) {
 				if (r) {
-					$.post('urls',
+					$.post(urls,
 							{
-								MsgId : row.msgid
+								id : rowId
 							}, function(data) {
 								if (data.result == "1") {
 									$.messager.alert("提示信息", data.msg);
-									$("#" + table).datagrid('reload');
+									$("#" + tab).datagrid('reload');
 								} else {
 									$.messager.alert('错误', data.msg);
 								}
@@ -162,7 +152,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		}
 	}
 	
-	
+	function reload(parent){
+		$(parent).datagrid('reload');
+	}
 
 	
 </script>
@@ -171,10 +163,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <body>
 	<div id="tabs" class="easyui-tabs" style="padding:5px" data-options="fit:true,border:true" style="width:100%;height:100%">
-		<div title="图文素材" data-options="tools:'#articles_list_tools'" style="padding:5px">
-			<table id="articles_list" class="easyui-datagrid" title="图文素材列表"
+		<div title="图文素材" data-options="tools:'#articles_list_tools'" >
+			<table id="articles_list" class="easyui-datagrid" 
 				style="width:100%;height:100%" cellspacing="5" cellpadding="5" fit="true"
-				data-options="rownumbers:true,singleSelect:true,pagination:true,url:'',method:'post',border:true,toolbar:articletoolbar">
+				data-options="rownumbers:true,singleSelect:true,pagination:true,
+				url:'',
+				method:'post',border:false,toolbar:articletoolbar">
+				<thead data-options="frozen:true">
+					<tr>
+						<th data-options="field:'ck',checkbox:true"></th>
+					</tr>
+				</thead>
 				<thead>
 					<tr>
 						<th data-options="field:'id',width:50">编码</th>
@@ -191,7 +190,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</table>
 			<div id="articles_list_tools">
 				<a href="javascript:void(0)" class="icon-mini-refresh"
-					onclick="alert('refresh')"></a>
+					onclick="reload('#articles_list')"></a>
 			</div>
 			<div id="articles_dlg" class="easyui-dialog"
 				style="width: 400px; height:auto; padding: 10px 20px;" closed="true"
@@ -244,42 +243,44 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</form>
 				<div id="articles-dlg-buttons">
 					<a href="javascript:void(0)" class="easyui-linkbutton"
-						onclick="save('articles_list')" iconcls="icon-save">保存</a> <a
+						onclick="save()" iconcls="icon-save">保存</a> <a
 						href="javascript:void(0)" class="easyui-linkbutton"
 						onclick="javascript:$('#articles_dlg').dialog('close')"
 						iconcls="icon-cancel">取消</a>
 				</div>
 			</div>
 		</div>
-		<div title="图片素材" data-options="tools:'#img_list_tools'" style="padding:5px">
-			<table id="img_list" class="easyui-datagrid" title="图文素材列表"
+		<div title="图片素材" data-options="tools:'#img_list_tools'" >
+			<table id="img_list" class="easyui-datagrid" 
 				style="width:100%;height:100%" cellspacing="5" cellpadding="5" fit="true"
-				data-options="rownumbers:true,singleSelect:true,pagination:true,url:'',method:'post',border:true,toolbar:imgtoolbar">
+				data-options="rownumbers:true,singleSelect:true,pagination:true,
+				url:'${pageContext.request.contextPath}/material/queryImgByPage',
+				method:'post',border:false,toolbar:imgtoolbar">
+				<thead data-options="frozen:true">
+					<tr>
+						<th data-options="field:'ck',checkbox:true"></th>
+					</tr>
+				</thead>
 				<thead>
 					<tr>
-						<th data-options="field:'id',width:50">编码</th>
-						<th data-options="field:'img_id',width:50">图片ID</th>
-						<th data-options="field:'img_name',width:50">名称</th>
-						<th data-options="field:'img_size',width:50">大小</th>
-						<th data-options="field:'img_format',width:50">格式</th>
-						<th data-options="field:'img_path',width:200">路径</th>
+						<th data-options="field:'imgId',width:100">图片ID</th>
+						<th data-options="field:'imgName',width:100">名称</th>
+						<th data-options="field:'imgSize',width:100">大小</th>
+						<th data-options="field:'imgType',width:100">格式</th>
+						<th data-options="field:'imgPath',width:200">路径</th>
 						
 					</tr>
 				</thead>
 			</table>
 			<div id="img_list_tools">
 				<a href="javascript:void(0)" class="icon-mini-refresh"
-					onclick="alert('refresh')"></a>
+					onclick="reload('#img_list')"></a>
 			</div>
 			<div id="img_dlg" class="easyui-dialog"
 				style="width: 400px; height:auto; padding: 10px 20px;" closed="true"
 				buttons="#img-dlg-buttons">
 				<div class="ftitle">图片上传</div>
-				<form id="fm" method="post" >
-					<div class="fitem">
-						<label>名称</label>
-						<input name="img_name" class="easyui-vlidatebox" required="true" />
-					</div>
+				<form id="fm" method="post" enctype="multipart/form-data" >
 					<div class="fitem">
 						<label>文件</label>
 						<input class="easyui-filebox" name="file" data-options="prompt:'选择文件...'"  buttonText="选择" required="true" accept="image/gif,image/jpeg,image/png"/>
@@ -300,10 +301,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</div>
 			</div>
 		</div>
-		<div title="声音素材" data-options="tools:'#voice_list_tools'" style="padding:5px">
-			<table id="voice_list" class="easyui-datagrid" title="图文素材列表"
+		<div title="声音素材" data-options="tools:'#voice_list_tools'" >
+			<table id="voice_list" class="easyui-datagrid" 
 				style="width:100%;height:100%" cellspacing="5" cellpadding="5" fit="true"
-				data-options="rownumbers:true,singleSelect:true,pagination:true,url:'',method:'post',border:true,toolbar:voicetoolbar">
+				data-options="rownumbers:true,singleSelect:true,pagination:true,
+				url:'',
+				method:'post',border:false,toolbar:voicetoolbar">
+				<thead data-options="frozen:true">
+					<tr>
+						<th data-options="field:'ck',checkbox:true"></th>
+					</tr>
+				</thead>
 				<thead>
 					<tr>
 						<th data-options="field:'id',width:50">编码</th>
@@ -316,13 +324,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</table>
 			<div id="voice_list_tools">
 				<a href="javascript:void(0)" class="icon-mini-refresh"
-					onclick="alert('refresh')"></a>
+					onclick="reload('#voice_list')"></a>
 			</div>
 			<div id="voice_dlg" class="easyui-dialog"
 				style="width: 400px; height:auto; padding: 10px 20px;" closed="true"
 				buttons="#voice-dlg-buttons">
 				<div class="ftitle">信息编辑</div>
-				<form id="fm" method="post">
+				<form id="fm" method="post" enctype="multipart/form-data">
 					<div class="fitem">
 						<label>文件</label>
 						<input class="easyui-filebox" name="file" data-options="prompt:'选择文件...'"  buttonText="选择" required="true" accept="image/gif,image/jpeg,image/png"/>
@@ -343,10 +351,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</div>
 			</div>
 		</div>
-		<div title="视频素材" data-options="tools:'#video_list_tools'" style="padding:5px">
-			<table id="video_list" class="easyui-datagrid" title="图文素材列表"
+		<div title="视频素材" data-options="tools:'#video_list_tools'">
+			<table id="video_list" class="easyui-datagrid" 
 				style="width:100%;height:100%" cellspacing="5" cellpadding="5" fit="true"
-				data-options="rownumbers:true,singleSelect:true,pagination:true,url:'',method:'post',border:true,toolbar:videotoolbar">
+				data-options="rownumbers:true,singleSelect:true,pagination:true,
+				url:'',
+				method:'post',border:false,toolbar:videotoolbar">
+				<thead data-options="frozen:true">
+					<tr>
+						<th data-options="field:'ck',checkbox:true"></th>
+					</tr>
+				</thead>
 				<thead>
 					<tr>
 						<th data-options="field:'id',width:50">编码</th>
@@ -359,13 +374,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</table>
 			<div id="video_list_tools">
 				<a href="javascript:void(0)" class="icon-mini-refresh"
-					onclick="alert('refresh')"></a>
+					onclick="reload('#video_list')"></a>
 			</div>
 			<div id="video_dlg" class="easyui-dialog"
 				style="width: 400px; height:auto; padding: 10px 20px;" closed="true"
 				buttons="#video-dlg-buttons">
 				<div class="ftitle">信息编辑</div>
-				<form id="fm" method="post">
+				<form id="fm" method="post" enctype="multipart/form-data">
 					<div class="fitem">
 						<label>文件</label>
 						<input class="easyui-filebox" name="file" data-options="prompt:'选择文件...'"  buttonText="选择" required="true" accept="image/gif,image/jpeg,image/png"/>
