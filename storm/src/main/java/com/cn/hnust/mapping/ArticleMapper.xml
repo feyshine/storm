@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cn.hnust.dao.ArticleMapper" >
+  <resultMap id="BaseResultMap" type="com.cn.hnust.pojo.Article" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="media_id" property="mediaId" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="thumb_media_id" property="thumbMediaId" jdbcType="VARCHAR" />
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    <result column="digest" property="digest" jdbcType="VARCHAR" />
+    <result column="show_cover_pic" property="showCoverPic" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="content_source_url" property="contentSourceUrl" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, media_id, title, thumb_media_id, author, digest, show_cover_pic, content, content_source_url
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from article
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List" />
+  	from article
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List" />
+  	from article limit #{startRow},#{pageSize}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from article
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.cn.hnust.pojo.Article" >
+    insert into article (id, media_id, title, 
+      thumb_media_id, author, digest, 
+      show_cover_pic, content, content_source_url
+      )
+    values (#{id,jdbcType=BIGINT}, #{mediaId,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
+      #{thumbMediaId,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, #{digest,jdbcType=VARCHAR}, 
+      #{showCoverPic,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{contentSourceUrl,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cn.hnust.pojo.Article" >
+    insert into article
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="mediaId != null" >
+        media_id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="thumbMediaId != null" >
+        thumb_media_id,
+      </if>
+      <if test="author != null" >
+        author,
+      </if>
+      <if test="digest != null" >
+        digest,
+      </if>
+      <if test="showCoverPic != null" >
+        show_cover_pic,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="contentSourceUrl != null" >
+        content_source_url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="mediaId != null" >
+        #{mediaId,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="thumbMediaId != null" >
+        #{thumbMediaId,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="digest != null" >
+        #{digest,jdbcType=VARCHAR},
+      </if>
+      <if test="showCoverPic != null" >
+        #{showCoverPic,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="contentSourceUrl != null" >
+        #{contentSourceUrl,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cn.hnust.pojo.Article" >
+    update article
+    <set >
+      <if test="mediaId != null" >
+        media_id = #{mediaId,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="thumbMediaId != null" >
+        thumb_media_id = #{thumbMediaId,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="digest != null" >
+        digest = #{digest,jdbcType=VARCHAR},
+      </if>
+      <if test="showCoverPic != null" >
+        show_cover_pic = #{showCoverPic,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="contentSourceUrl != null" >
+        content_source_url = #{contentSourceUrl,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cn.hnust.pojo.Article" >
+    update article
+    set media_id = #{mediaId,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      thumb_media_id = #{thumbMediaId,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      digest = #{digest,jdbcType=VARCHAR},
+      show_cover_pic = #{showCoverPic,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      content_source_url = #{contentSourceUrl,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

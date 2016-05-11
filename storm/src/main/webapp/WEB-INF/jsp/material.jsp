@@ -28,20 +28,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		text : '增加',
 		iconCls : 'icon-add',
 		handler : function() {
-			add("articles_list","articles_dlg","${pageContext.request.contextPath}/material/add");
+			add("articles_list","articles_dlg","${pageContext.request.contextPath}/article/add");
 		}
-	}, {
+	},'-', {
 		text : '编辑',
 		iconCls : 'icon-edit',
 		handler : function() {
-			edit("articles_list","articles_list","${pageContext.request.contextPath}/material/edit?MsgId=");
+			edit("articles_list","articles_dlg","${pageContext.request.contextPath}/article/edit?id=");
 		}
 	}, '-', {
 		text : '删除',
 		iconCls : 'icon-remove',
 		handler : function() {
 			var row = $("#articles_list").datagrid('getSelected');
-			dele("articles_list","${pageContext.request.contextPath}/material/delete","","");
+			dele("articles_list","${pageContext.request.contextPath}/article/delete",row.id);
 		}
 	} ];
 	
@@ -106,7 +106,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	function edit(tab,dlg,urls) {
 		table = tab;
 		vdlg = dlg;
-		var row = $("#" + dlg).datagrid("getSelected");
+		var row = $("#" + tab).datagrid("getSelected");
 		if (row) {
 			$("#" + dlg).dialog("open").dialog('setTitle', '编辑');
 			$("#fm").form("load", row);
@@ -155,8 +155,49 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	function reload(parent){
 		$(parent).datagrid('reload');
 	}
-
 	
+
+	$(function() {
+
+		$.ajax({
+			url : "${pageContext.request.contextPath}/material/queryall",
+			type : "post",
+			success : function(data) {
+				var themecombo = [ {
+					'text' : '请选择',
+					'id' : ''
+				} ];
+				for (var i = 0; i < data.rows.length; i++) {
+					themecombo.push({
+						"text" : data.rows[i].imgName,
+						"id" : data.rows[i].imgId
+					});
+				}
+				$("#combobox1").combobox("loadData", themecombo);
+			}
+		});
+	});
+	
+	$(function() {
+
+		$.ajax({
+			url : "${pageContext.request.contextPath}/state/queryall",
+			type : "post",
+			success : function(data) {
+				var themecombo = [ {
+					'text' : '请选择',
+					'id' : ''
+				} ];
+				for (var i = 0; i < data.rows.length; i++) {
+					themecombo.push({
+						"text" : data.rows[i].name,
+						"id" : data.rows[i].id
+					});
+				}
+				$("#combobox2").combobox("loadData", themecombo);
+			}
+		});
+	});
 </script>
 
 </head>
@@ -167,7 +208,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<table id="articles_list" class="easyui-datagrid" 
 				style="width:100%;height:100%" cellspacing="5" cellpadding="5" fit="true"
 				data-options="rownumbers:true,singleSelect:true,pagination:true,
-				url:'',
+				url:'${pageContext.request.contextPath}/article/queryArticleByPage',
 				method:'post',border:false,toolbar:articletoolbar">
 				<thead data-options="frozen:true">
 					<tr>
@@ -176,15 +217,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</thead>
 				<thead>
 					<tr>
-						<th data-options="field:'id',width:50">编码</th>
-						<th data-options="field:'media_id',width:50">图文消息ID</th>
-						<th data-options="field:'title',width:50">标题</th>
-						<th data-options="field:'thumb_media_id',width:50">封面图片ID</th>
-						<th data-options="field:'author',width:50">作者</th>
+						<th data-options="field:'id',width:100">编码</th>
+						<th data-options="field:'title',width:100">标题</th>
+						<th data-options="field:'thumbMediaId',width:100">封面图片</th>
+						<th data-options="field:'author',width:100">作者</th>
 						<th data-options="field:'digest',width:100">摘要</th>
-						<th data-options="field:'show_cover_pic',width:20">是否显示封面</th>
-						<th data-options="field:'content',width:200">具体内容</th>
-						<th data-options="field:'content_source_url',width:100">原文链接</th>
+						<th data-options="field:'showCoverPic',width:100">是否显示封面</th>
+						<th data-options="field:'content',width:500">具体内容</th>
+						<th data-options="field:'contentSourceUrl',width:200">原文链接</th>
 					</tr>
 				</thead>
 			</table>
@@ -202,16 +242,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							required="true" />
 					</div>
 					<div class="fitem">
-						<label>图文消息ID</label><input name="media_id"
-							class="easyui-combobox"  data-options="url:'',method:'get',valueField:'id',textField:'text',multiple:true,required:true,editable:false,panelHeight:'auto'"/>
-					</div>
-					<div class="fitem">
 						<label>标题</label><input name="title" class="easyui-validatebox"
 							required="true" />
 					</div>
 					<div class="fitem">
-						<label>封面图片ID</label><input name="thumb_media_id"
-							class="easyui-combobox"  data-options="url:'',method:'get',valueField:'id',textField:'text',multiple:true,required:true,editable:false,panelHeight:'auto'"/>
+						<label>封面图片ID</label><input id = "combobox1" name="thumbMediaId"
+							class="easyui-combobox"  data-options="valueField:'id', textField:'text',required:true,
+							editable:false,panelHeight:'auto'"/>
 					</div>
 					<div class="fitem">
 						<label>作者</label><input name="author" class="easyui-vlidatebox"
@@ -222,15 +259,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							required="true" />
 					</div>
 					<div class="fitem">
-						<label>是否显示封面</label><input name="show_cover_pic"
-							class="easyui-combobox"  data-options="url:'',method:'get',valueField:'id',textField:'text',multiple:true,required:true,editable:false,panelHeight:'auto'" />
+						<label>是否显示封面</label><input id = "combobox2" name="showCoverPic"
+							class="easyui-combobox"  data-options="valueField:'id', textField:'text',
+							required:true,editable:false,panelHeight:'auto'" />
 					</div>
 					<div class="fitem">
 						<label>摘要</label><input name="digest" class="easyui-vlidatebox"
 							required="true" />
 					</div>
 					<div class="fitem">
-						<label>原文链接</label><input name="content_source_url"
+						<label>原文链接</label><input name="contentSourceUrl"
 							class="easyui-vlidatebox" required="true" />
 					</div>
 
