@@ -28,7 +28,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <script type="text/javascript">
 
-	var toolbar = [ {
+	var toolbar = [ '-', {
 		text : '增加',
 		iconCls : 'icon-add',
 		handler : function() {
@@ -46,7 +46,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		handler : function() {
 			dele();
 		}
-	} ];
+	}, '-'];
 	
 	
 	var url;//请求路径
