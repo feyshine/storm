@@ -19,4 +19,9 @@ public class CountryServiceImp<T> implements ICountryService<T> {
 		return this.countryDao.queryAll();
 	}
 
+	@Override
+	public T queryById(Long id) {
+		return this.countryDao.selectByPrimaryKey(id);
+	}
+
 }

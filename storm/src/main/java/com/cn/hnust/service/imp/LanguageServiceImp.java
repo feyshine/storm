@@ -17,5 +17,9 @@ public class LanguageServiceImp<T> implements ILanguageService<T> {
 	public List<T> queryAll() {
 		return this.LanguageDao.queryAll();
 	}
+	@Override
+	public T queryById(Long id) {
+		return this.LanguageDao.selectByPrimaryKey(id);
+	}
 
 }

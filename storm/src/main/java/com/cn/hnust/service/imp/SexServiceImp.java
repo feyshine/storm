@@ -19,4 +19,9 @@ public class SexServiceImp<T> implements ISexService<T> {
 		return this.sexDao.queryAll();
 	}
 
+	@Override
+	public T queryById(Long id) {
+		return sexDao.selectByPrimaryKey(id);
+	}
+
 }

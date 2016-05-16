@@ -12,8 +12,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cn.hnust.pojo.Country;
 import com.cn.hnust.pojo.Fans;
+import com.cn.hnust.pojo.Language;
+import com.cn.hnust.pojo.Province;
+import com.cn.hnust.pojo.Sex;
+import com.cn.hnust.service.ICountryService;
 import com.cn.hnust.service.IFansService;
+import com.cn.hnust.service.ILanguageService;
+import com.cn.hnust.service.IProvinceService;
+import com.cn.hnust.service.ISexService;
 
 @Controller
 @RequestMapping("/fans")
@@ -21,6 +29,14 @@ public class FansController extends BaseController {
 	
 	@Resource
 	private IFansService<Fans> fansService;
+	@Resource
+	private ICountryService<Country> countryService;
+	@Resource
+	private ISexService<Sex> sexService;
+	@Resource
+	private IProvinceService<Province> provinceService;
+	@Resource
+	private ILanguageService<Language> languageService;
 	
 	@ResponseBody
 	@RequestMapping(value = "/queryFansByPage", method = { RequestMethod.POST })
@@ -51,11 +67,30 @@ public class FansController extends BaseController {
 			map.put(MSG, "已经存在！");
 			map.put(RESULT, RESULT_ERROR);
 		}else {
+			convertColumn(fan);
 			this.fansService.save(fan);
 			map.put(MSG, "添加成功！");
 			map.put(RESULT, RESULT_OK);
 		};
 		return map;
+	}
+
+	/**
+	 * @param fan
+	 */
+	private void convertColumn(Fans fan) {
+		Long countryId = Long.valueOf(fan.getCountry());
+		Country country = countryService.queryById(countryId);
+		fan.setCountry(country.getName());
+		Long provinceId = Long.valueOf(fan.getProvince());
+		Province province = provinceService.queryById(provinceId);
+		fan.setProvince(province.getName());
+		Long sexId = Long.valueOf(fan.getSex());
+		Sex sex = sexService.queryById(sexId);
+		fan.setSex(sex.getName());
+		Long languageId = Long.valueOf(fan.getLanguage());
+		Language language = languageService.queryById(languageId);
+		fan.setLanguage(language.getName());
 	}
 	
 	

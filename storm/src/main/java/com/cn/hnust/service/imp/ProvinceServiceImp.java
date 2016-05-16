@@ -19,6 +19,11 @@ public class ProvinceServiceImp<T> implements IProvinceService<T> {
 		return this.provinceDao.queryByCountry(countryId);
 	}
 
+	@Override
+	public T queryById(Long id) {
+		return provinceDao.selectByPrimaryKey(id);
+	}
+
 	
 
 }
