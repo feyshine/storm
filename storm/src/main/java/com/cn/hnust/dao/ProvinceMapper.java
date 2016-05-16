@@ -1,5 +1,7 @@
 package com.cn.hnust.dao;
 
+import java.util.List;
+
 
 public interface ProvinceMapper<T> {
     int deleteByPrimaryKey(Long id);
@@ -13,4 +15,6 @@ public interface ProvinceMapper<T> {
     int updateByPrimaryKeySelective(T record);
 
     int updateByPrimaryKey(T record);
+    
+    List<T> queryByCountry(Long countryId);
 }

@@ -54,7 +54,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	function add() {
 		$("#fans_dlg").dialog("open").dialog('setTitle', '增加');
 		$("#fm").form("clear");
-		url = "";
+		url = "${pageContext.request.contextPath}/fans/add";
 		document.getElementById("hidtype").value = "submit";
 	}
 	
@@ -64,7 +64,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		if (row) {
 			$("#fans_dlg").dialog("open").dialog('setTitle', '编辑');
 			$("#fm").form("load", row);
-			url = "" + row.id;
+			url = "${pageContext.request.contextPath}/fans/edit";
 		}
 	}
 	
@@ -79,7 +79,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				var obj = eval("(" + result + ")");//转换后的JSON对象
 				if (obj.result == "1") {
 					$.messager.alert("提示信息", obj.msg);
-					$("#" + vdlg).dialog("close");
+					$("#fans_dlg").dialog("close");
 					$("#fans_list").datagrid("load");
 				} else {
 					$.messager.alert("提示信息", obj.msg);
@@ -93,9 +93,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		if (row) {
 			$.messager.confirm('确认', '你确定要删除?', function(r) {
 				if (r) {
-					$.post("",
+					$.post("${pageContext.request.contextPath}/fans/delete",
 							{
-								id : row.openId
+								id : row.openid
 							}, function(data) {
 								if (data.result == "1") {
 									$.messager.alert("提示信息", data.msg);
@@ -112,7 +112,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	$(function() {
 
 		$.ajax({
-			url : "${pageContext.request.contextPath}/material/queryall",
+			url : "${pageContext.request.contextPath}/sex/query",
 			type : "post",
 			success : function(data) {
 				var themecombo = [ {
@@ -121,8 +121,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				} ];
 				for (var i = 0; i < data.rows.length; i++) {
 					themecombo.push({
-						"text" : data.rows[i].imgName,
-						"id" : data.rows[i].imgId
+						"text" : data.rows[i].name,
+						"id" : data.rows[i].id
 					});
 				}
 				$("#sex").combobox("loadData", themecombo);
@@ -130,10 +130,55 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		});
 	});
 	
+	
 	$(function() {
 
 		$.ajax({
-			url : "${pageContext.request.contextPath}/state/queryall",
+			url : "${pageContext.request.contextPath}/country/query",
+			type : "post",
+			success : function(data) {
+				var themecombo = [ {
+					'text' : '请选择',
+					'id' : ''
+				} ];
+				for (var i = 0; i < data.rows.length; i++) {
+					themecombo.push({
+						"text" : data.rows[i].name,
+						"id" : data.rows[i].id
+					});
+				}
+				$("#country").combobox("loadData", themecombo);
+			}
+		});
+	});
+	
+	
+	function loadProvince(cid) {
+
+		$.ajax({
+			url : "${pageContext.request.contextPath}/province/queryByCountry",
+			type : "post",
+			data : {cid:cid},
+			success : function(data) {
+				var themecombo = [ {
+					'text' : '请选择',
+					'id' : ''
+				} ];
+				for (var i = 0; i < data.rows.length; i++) {
+					themecombo.push({
+						"text" : data.rows[i].name,
+						"id" : data.rows[i].id
+					});
+				}
+				$("#province").combobox("loadData", themecombo);
+			}
+		});
+	};
+	
+	$(function() {
+
+		$.ajax({
+			url : "${pageContext.request.contextPath}/language/query",
 			type : "post",
 			success : function(data) {
 				var themecombo = [ {
@@ -205,7 +250,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<div class="ftitle">信息编辑</div>
 		<form id="fm" method="post">
 			<div class="fitem">
-				<label>OpenID</label><input name="openid" editable ="disable" class="easyui-validatebox"
+				<label>OpenID</label><input name="openid"  class="easyui-validatebox"
 					required="true" />
 			</div>
 			<div class="fitem">
@@ -219,18 +264,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							editable:false,panelHeight:'auto'" />
 			</div>
 			<div class="fitem">
-				<label>国家</label><input name="country" class="easyui-vlidatebox"
-					required="true" />
+				<label>国家</label><input id="country" name="country" class="easyui-combobox"
+					data-options="valueField:'id', textField:'text',onSelect:function(data){loadProvince(data.id)},
+							required:true,editable:false,panelHeight:'200px'"/>
 			</div>
 			<div class="fitem">
-				<label>省份</label><input name="province" class="easyui-vlidatebox"
-					required="true" />
+				<label>省份</label><input id="province" name="province" class="easyui-combobox"
+					data-options="valueField:'id', textField:'text',
+							required:true,editable:false,panelHeight:'200px'"/>
 			</div>
 			<div class="fitem">
 				<label>语言</label><input id="language" name="language"
 					class="easyui-combobox"
 					data-options="valueField:'id', textField:'text',
-							required:true,editable:false,panelHeight:'auto'" />
+							required:true,editable:false,panelHeight:'200px'" />
 			</div>
 			<div class="fitem">
 				<label>头像链接</label><input name="headimgurl" class="easyui-vlidatebox"

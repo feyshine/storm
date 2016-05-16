@@ -2,14 +2,21 @@ package com.cn.hnust.service.imp;
 
 import java.util.List;
 
-import com.cn.hnust.service.ICountryService;
+import javax.annotation.Resource;
 
+import org.springframework.stereotype.Service;
+
+import com.cn.hnust.dao.CountryMapper;
+import com.cn.hnust.service.ICountryService;
+@Service("countryService")
 public class CountryServiceImp<T> implements ICountryService<T> {
 
+	@Resource
+	private CountryMapper<T> countryDao;
+	
 	@Override
 	public List<T> queryAll() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.countryDao.queryAll();
 	}
 
 }

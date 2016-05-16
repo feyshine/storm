@@ -42,5 +42,53 @@ public class FansController extends BaseController {
 		map.put(ROWS, imgpage);
 		return map;
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/add", method = { RequestMethod.POST })
+	public Map<String, Object> add(Fans fan){
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (this.fansService.select(fan.getOpenid()) != null) {
+			map.put(MSG, "已经存在！");
+			map.put(RESULT, RESULT_ERROR);
+		}else {
+			this.fansService.save(fan);
+			map.put(MSG, "添加成功！");
+			map.put(RESULT, RESULT_OK);
+		};
+		return map;
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/edit", method = { RequestMethod.POST })
+	public Map<String, Object> edit(Fans fan){
+		logger.info("openid:" +fan.getOpenid());
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (this.fansService.select(fan.getOpenid()) != null) {
+			this.fansService.updateByPrimaryKey(fan);;
+			map.put(MSG, "编辑成功！");
+			map.put(RESULT, RESULT_OK);
+		}else {
+			map.put(MSG, "用户不存在！");
+			map.put(RESULT, RESULT_ERROR);
+		};
+		return map;
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/delete", method = { RequestMethod.POST })
+	public Map<String, Object> delete(String id){
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (this.fansService.select(id) != null) {
+			this.fansService.delete(id);
+			map.put(MSG, "删除成功！");
+			map.put(RESULT, RESULT_OK);
+		}else {
+			map.put(MSG, "用户不存在！");
+			map.put(RESULT, RESULT_ERROR);
+		};
+		return map;
+	}
 
 }

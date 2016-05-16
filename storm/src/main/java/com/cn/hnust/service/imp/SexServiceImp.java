@@ -2,14 +2,21 @@ package com.cn.hnust.service.imp;
 
 import java.util.List;
 
-import com.cn.hnust.service.ISexService;
+import javax.annotation.Resource;
 
+import org.springframework.stereotype.Service;
+
+import com.cn.hnust.dao.SexMapper;
+import com.cn.hnust.service.ISexService;
+@Service("sexService")
 public class SexServiceImp<T> implements ISexService<T> {
 
+	@Resource
+	private SexMapper<T> sexDao;
+	
 	@Override
 	public List<T> queryAll() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.sexDao.queryAll();
 	}
 
 }

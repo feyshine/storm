@@ -2,14 +2,23 @@ package com.cn.hnust.service.imp;
 
 import java.util.List;
 
-import com.cn.hnust.service.IProvinceService;
+import javax.annotation.Resource;
 
+import org.springframework.stereotype.Service;
+
+import com.cn.hnust.dao.ProvinceMapper;
+import com.cn.hnust.service.IProvinceService;
+@Service("provinceService")
 public class ProvinceServiceImp<T> implements IProvinceService<T> {
 
+	@Resource
+	private ProvinceMapper<T> provinceDao;
+	
 	@Override
-	public List<T> queryAll() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<T> queryByCountry(Long countryId) {
+		return this.provinceDao.queryByCountry(countryId);
 	}
+
+	
 
 }

@@ -14,6 +14,11 @@
     from language
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="queryAll" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from language
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from language
     where id = #{id,jdbcType=BIGINT}
