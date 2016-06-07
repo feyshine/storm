@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cn.hnust.pojo.Image;
 import com.cn.hnust.service.IImageService;
-import com.cn.hnust.util.FileUtls;
+import com.cn.hnust.util.FileUtil;
 
 
 @Controller
@@ -74,13 +74,13 @@ public class MaterialController extends BaseController{
 	@RequestMapping(value = "/loadimg", method = { RequestMethod.POST })
 	public Map<String, Object> upload(@RequestParam("file") MultipartFile file,HttpServletRequest request){
 		Map<String, Object> map = new HashMap<String, Object>();
-		if(FileUtls.saveFile(file,FileUtls.getFilePath(request))){
+		if(FileUtil.saveFile(file,FileUtil.getFilePath(request))){
 			Image img = new Image();
 			img.setImgId(new Date().getTime());
 			img.setImgName(file.getOriginalFilename());
 			img.setImgType(file.getContentType());
 			img.setImgSize(file.getSize()+"");
-			img.setImgPath(FileUtls.getFilePath(request));
+			img.setImgPath(FileUtil.getFilePath(request));
 			imageService.save(img);
 			map.put(RESULT, RESULT_OK);
 			map.put(MSG, "上传成功！");

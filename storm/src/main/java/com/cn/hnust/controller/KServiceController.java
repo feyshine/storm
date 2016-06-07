@@ -23,7 +23,7 @@ import com.cn.hnust.pojo.KService;
 import com.cn.hnust.resp.ResponseResult;
 import com.cn.hnust.service.IKService;
 import com.cn.hnust.util.Config;
-import com.cn.hnust.util.FileUtls;
+import com.cn.hnust.util.FileUtil;
 import com.cn.hnust.util.L;
 
 @Controller
@@ -60,8 +60,8 @@ public class KServiceController extends BaseController{
 //				L.i(TAG, "添加客服失败！err = " + addresult.getErrmsg());
 //			}
 //		}
-		if(FileUtls.saveFile(file,FileUtls.getFilePath(request))){
-			kservice.setKfheadimgurl(FileUtls.getFilePath(request));
+		if(FileUtil.saveFile(file,FileUtil.getFilePath(request))){
+			kservice.setKfheadimgurl(FileUtil.getFilePath(request));
 			this.kService.save(kservice);
 			map.put(RESULT, RESULT_OK);
 			map.put(MSG, "添加成功");
@@ -106,8 +106,8 @@ public class KServiceController extends BaseController{
 			map.put(RESULT, RESULT_ERROR);
 			map.put(MSG, "客服账号不存在");
 		}else{
-			if (FileUtls.saveFile(file,FileUtls.getFilePath(request))) {
-				service.setKfheadimgurl(FileUtls.getFilePath(request));
+			if (FileUtil.saveFile(file,FileUtil.getFilePath(request))) {
+				service.setKfheadimgurl(FileUtil.getFilePath(request));
 				this.kService.updateByPrimaryKey(service);
 				map.put(RESULT, RESULT_OK);
 				map.put(MSG, "编辑成功");
@@ -153,7 +153,7 @@ public class KServiceController extends BaseController{
 	@RequestMapping(value="/upload",method={RequestMethod.POST})
 	public Map<String, Object> uploadFile(@RequestParam MultipartFile[] files, HttpServletRequest request){
 		Map<String, Object> map = new HashMap<String, Object>();
-		FileUtls.saveFiles(files, request);
+		FileUtil.saveFiles(files, request);
 		return map;
 	}
 

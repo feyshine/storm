@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.cn.hnust.biz.TokenThread;
 import com.cn.hnust.biz.TokenThread.AccessTokenCallBack;
 import com.cn.hnust.resp.AccessToken;
-import com.cn.hnust.util.FileUtls;
+import com.cn.hnust.util.FileUtil;
 import com.cn.hnust.util.L;
 @WebServlet(name = "AccessTokenServlet")
 public class AccessTokenServlet extends HttpServlet implements AccessTokenCallBack{
@@ -46,7 +46,7 @@ public class AccessTokenServlet extends HttpServlet implements AccessTokenCallBa
 
 	@Override
 	public void callBack(AccessToken accessToken) {
-			FileUtls.writerLog(FileUtls.PATH,accessToken.getAccessToken());
+			FileUtil.writerLog(FileUtil.PATH,accessToken.getAccessToken());
 	}
 
 }
