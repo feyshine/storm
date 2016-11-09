@@ -63,11 +63,11 @@
         </servlet-class>
         <init-param>
             <param-name>appid</param-name>
-            <param-value>wx0b344b5f4b2c16d9</param-value>
+            <param-value>wx921aeccf6dc95983</param-value>
         </init-param>
         <init-param>
             <param-name>appsecret</param-name>
-            <param-value>26c6ee9aa67597018acc0521042b609a</param-value>
+            <param-value>7db71b7954845e9e5f65ec4a8fccf5bb</param-value>
         </init-param>
         <load-on-startup>0</load-on-startup>
    </servlet>

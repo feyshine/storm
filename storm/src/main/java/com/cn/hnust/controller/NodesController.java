@@ -1,4 +1,5 @@
 package com.cn.hnust.controller;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,13 @@ public class NodesController extends BaseController{
 	@RequestMapping(value="/tree",method={RequestMethod.POST})
 	public Map<String,Object> queryChildNodes(String pname){
 		Map<String,Object> map = new HashMap<String,Object>();
-		//String queryParam = new String(pname.getBytes("ISO-8859-1"),"UTF-8");
+//		String queryParam = null;
+//		try {
+//			queryParam = new String(pname.getBytes("ISO-8859-1"),"UTF-8");
+//		} catch (UnsupportedEncodingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		logger.info("pname = " + pname);
 		List<Tree> trees = new ArrayList<Tree>();
 		List<Node> childNodesSet = this.nodeService.queryChildNodes(pname);

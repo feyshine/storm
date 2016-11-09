@@ -5,8 +5,8 @@ import java.security.NoSuchAlgorithmException;
 
 public class SignUtil {
 	// 与接口配置信息中的Token要一致
-	private static final String token = "yskj";
-	private static final String EncodingAESKey = "E4LXBUodE9k0Uoy22XWjx5baWRWoOQuofsDINUbUQjH";
+	private static final String token = "lvwuwang";
+	private static final String EncodingAESKey = "piUPx6yA92tqZooHzSq6eZQX8VfL7HGXSgGrUBhiE66";
 
 	public static boolean checkSignature(String signature, String timestamp,String nonce) {
 		// 从请求中（也就是微信服务器传过来的）拿到的token, timestamp, nonce
