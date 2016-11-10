@@ -45,7 +45,7 @@ $(document).ready(function(){
 		$.ajax({
 			type:'post',
 			dataType:'json',
-			url:'${pageContext.request.contextPath}/node/tree?pname=' + encodeURI(n.name),
+			url:'${pageContext.request.contextPath}/node/tree?pid=' + encodeURI(n.id),
 			success:function(data){
 					var result = eval(data);
 					$('#'+ n.name).tree({

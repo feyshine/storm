@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Tree {
 	
-	public long id;
+	public String id;
 	public String text;
 	public String state;
 	public boolean checked;

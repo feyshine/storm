@@ -19,7 +19,7 @@ import com.cn.hnust.controller.BaseController;
 
 public class FileUtil {
 	public static Logger logger = LogManager.getLogger(FileUtil.class.getName());
-	public static final String PATH = "c:/accessToken.text";
+	public static final String PATH = "d:/accessToken.text";
 
 	public static String read(String pathName) {
 		final File logFile = new File(pathName);

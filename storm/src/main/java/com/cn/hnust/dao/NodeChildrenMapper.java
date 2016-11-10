@@ -3,18 +3,18 @@ package com.cn.hnust.dao;
 import java.util.List;
 
 
-public interface SexMapper<T> {
-    int deleteByPrimaryKey(Long id);
+public interface NodeChildrenMapper<T> {
+    int deleteByPrimaryKey(String id);
 
     int insert(T record);
 
     int insertSelective(T record);
 
-    T selectByPrimaryKey(Long id);
+    T selectByPrimaryKey(String id);
 
     int updateByPrimaryKeySelective(T record);
 
     int updateByPrimaryKey(T record);
-    
-    List<T> queryAll();
+	
+	List<T> queryChildNodes(String pid);
 }

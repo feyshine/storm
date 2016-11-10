@@ -2,8 +2,10 @@ package com.cn.hnust.pojo;
 
 import java.util.Date;
 
-public class Node {
+public class NodeChildren {
     private String id;
+
+    private String pid;
 
     private String name;
 
@@ -25,6 +27,14 @@ public class Node {
 
     public void setId(String id) {
         this.id = id == null ? null : id.trim();
+    }
+
+    public String getPid() {
+        return pid;
+    }
+
+    public void setPid(String pid) {
+        this.pid = pid == null ? null : pid.trim();
     }
 
     public String getName() {

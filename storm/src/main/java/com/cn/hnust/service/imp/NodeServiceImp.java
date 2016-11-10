@@ -15,36 +15,30 @@ public class NodeServiceImp<T> implements INodeService<T>{
 	private NodeMapper<T> nodeDao;
 	@Override
 	public int save(T t) {
-		this.nodeDao.insert(t);
-		return 0;
+		return nodeDao.insert(t);
 	}
 
 	@Override
-	public T query(Long id) {
+	public T query(String id) {
 		return this.nodeDao.selectByPrimaryKey(id);
 	}
 
 	@Override
 	public int update(T t) {
-		this.nodeDao.updateByPrimaryKey(t);
-		return 0;
+		return nodeDao.updateByPrimaryKey(t);
 	}
 
 	@Override
-	public int delete(Long id) {
-		this.nodeDao.deleteByPrimaryKey(id);
-		return 0;
+	public int delete(String id) {
+		return nodeDao.deleteByPrimaryKey(id);
 	}
 
 	@Override
 	public List<T> queryTopNodes() {
-		return this.nodeDao.queryTopNodes();
+		return nodeDao.queryTopNodes();
 	}
 
-	@Override
-	public List<T> queryChildNodes(String pname) {
-		return this.nodeDao.queryChildNodes(pname);
-	}
+	
 
 
 }
